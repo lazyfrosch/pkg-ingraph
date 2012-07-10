@@ -1,0 +1,120 @@
+{
+    "re": "/memory/i",
+
+    "flot": {
+        "series": {
+            "lines": {
+                "fill": true,
+                "fillColor": {
+                    "colors": [
+                        {
+                            "opacity": 0.4
+                        },
+                        {
+                            "opacity": 0.9,
+                            "brightness": 0.8
+                        }
+                    ]
+                }
+            },
+            "stack": "usage"
+        },
+
+        "yaxes": [
+            {
+                "label": "Usage",
+                "unit": "byte"
+            },
+            {
+                "label": "Free",
+                "position": "right",
+                "tickColor": "#49A835"
+            }
+        ]
+    },
+
+    "series": [
+        {
+            "color": "#49A835", 
+            "re": "/free$/i", 
+            "type": "avg",
+            "label": "Free",
+            "yaxis": 2,
+            "stack": false,
+            "unit": "percent",
+            "lines": {
+                "lineWidth": 3,
+                "fill": null
+            }
+        },
+        {
+            "color": "#2D7DB3", 
+            "re": "/^active$/i", 
+            "type": "avg",
+            "label": "Used",
+            "yaxis": 1,
+            "lines": {
+                "lineWidth": 0
+            },
+            "convert": "function (y) { return y !== null ? y*1024 : null; }"
+        },
+        {
+            "color": "#AB1852", 
+            "re": "/^cached$/i", 
+            "type": "avg",
+            "label": "Cached",
+            "yaxis": 1,
+            "lines": {
+                "lineWidth": 0
+            },
+            "convert": "function (y) { return y !== null ? y*1024 : null; }"
+        },
+        {
+            "color": "#844798", 
+            "re": "/^buffers$/i", 
+            "type": "avg",
+            "label": "Buffers",
+            "yaxis": 1,
+            "lines": {
+                "lineWidth": 0
+            },
+            "convert": "function (y) { return y !== null ? y*1024 : null; }"
+        },
+        {
+            "color": "#FF6E00", 
+            "re": "/^inactive$/i", 
+            "type": "avg",
+            "label": "Inactive",
+            "yaxis": 1,
+            "lines": {
+                "lineWidth": 0
+            },
+            "convert": "function (y) { return y !== null ? y*1024 : null; }"
+        },
+
+        {
+            "color": "#2D7DB3", 
+            "re": "/^memory usage$/i", 
+            "type": "avg",
+            "label": "Used",
+            "yaxis": 1,
+            "stack": false,
+            "lines": {
+                "lineWidth": 2
+            }
+        },
+        {
+            "color": "#CB0C29", 
+            "re": "/^memory usage$/i", 
+            "type": "upper_limit",
+            "label": "Critical",
+            "yaxis": 1,
+            "stack": false,
+            "lines": {
+                "lineWidth": 2,
+                "fill": null
+            },
+            "enabled": false
+        }
+    ]
+}

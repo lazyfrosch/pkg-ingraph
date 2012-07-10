@@ -1,0 +1,32 @@
+{
+    "re": "/users$|logins$/i",
+
+    "flot": {
+        "series": {
+            "lines": {
+                "show": true,
+                "fill": true,
+                "fillColor": {
+                    "colors": [
+                        {
+                            "opacity": 0.4
+                        },
+                        {
+                            "opacity": 0.9,
+                            "brightness": 0.8
+                        }
+                    ]
+                }
+            }
+        }
+    },
+
+    "series": [
+        {
+            "color": "#FA5C0D",
+            "re": "/^users$/i",
+            "type": "avg",
+            "label": "Users"
+        }
+    ]
+}

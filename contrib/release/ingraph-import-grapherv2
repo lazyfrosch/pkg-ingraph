@@ -1,0 +1,220 @@
+#!/usr/bin/env python
+from xmlrpclib import ServerProxy, MultiCall
+import pickle
+import getpass
+from sqlalchemy.schema import MetaData, Table
+from sqlalchemy.engine import create_engine
+from sqlalchemy.sql.expression import select, join, func, and_
+import time
+import MySQLdb.cursors
+from datetime import datetime
+import math
+import sys
+from ingrah import utils
+
+print("NETWAYS inGraph (Grapher V2 import)")
+
+config = utils.load_config('ingraph-xmlrpc.conf')
+url = utils.get_xmlrpc_url(config)
+api = ServerProxy(url, allow_none=True)
+
+if len(api.getTimeFrames()) > 0:
+    print("The inGraph backend you have selected already contains data. " + \
+          "You can only import into an empty backend.")
+    sys.exit(1)
+
+default_hostname = '127.0.0.1'
+default_port = '3306'
+default_database = 'grapherv2'
+default_username = 'root'
+default_password = ''
+
+hostname = raw_input('MySQL hostname [%s]: ' % (default_hostname))
+
+if hostname.strip() == '':
+    hostname = default_hostname
+
+valid = False
+
+while not valid:
+    port = raw_input('MySQL port [%s]: ' % (default_port))
+    
+    if port == '':
+        port = default_port
+    
+    try:
+        port = int(port)
+        
+        valid = True
+    except ValueError:
+        print("Port must be a number. Please try again.")
+
+database = raw_input('MySQL database [%s]: ' % (default_database))
+
+if database.strip() == '':
+    database = default_database
+
+username = raw_input('MySQL username [%s]: ' % (default_username))
+
+if username.strip() == '':
+    username = default_username
+
+password = getpass.getpass('MySQL password [%s]: ' % (default_password))
+
+if password.strip() == '':
+    password = default_password
+
+dsn = 'mysql://%s:%s@%s:%d/%s' % (username, password, hostname, port, database)
+
+engine = create_engine(dsn)#, connect_args={'cursorclass': MySQLdb.cursors.SSCursor})
+
+metadata = MetaData()
+metadata.bind = engine
+metadata.reflect()
+
+engine.execute('SET @@NET_READ_TIMEOUT=259200;')
+
+agts = [
+    ('none', 60, 2*7*24*60*60),
+    ('hour', 60*60, 28*7*24*60*60),
+    ('day', 60*60*24, 52*7*24*60*60),
+    ('week', 60*60*24*7, 2*52*7*24*60*60),
+    #('month', 60*60*24*31, 4*52*7*24*60*60),
+    #('year', 60*60*24*365, None)
+]
+
+ng_data = metadata.tables['ng_data']
+ng_perf = metadata.tables['ng_perf']
+ng_host = metadata.tables['ng_host']
+ng_service = metadata.tables['ng_service']
+ng_host_service = metadata.tables['ng_host_service']
+ng_aggregate_type = metadata.tables['ng_aggregate_type']
+ng_perf_type = metadata.tables['ng_perf_type']
+
+sel = select([ng_aggregate_type.c.aggretype_name, func.min(ng_perf.c.perf_created).label('min_ts')], \
+             from_obj=[ng_perf.join(ng_aggregate_type)]) \
+             .group_by(ng_aggregate_type.c.aggretype_name)
+
+min_info = dict()
+for row in sel.execute():
+    min_info[row[ng_aggregate_type.c.aggretype_name]] = row['min_ts']
+
+processed = []
+
+print("Importing data...")
+
+_bytesuffixes = {
+    'B': 1024**0,
+    'KB': 1024**1,
+    'MB': 1024**2,
+    'GB': 1024**3,
+    'TB': 1024**4,
+    'PB': 1024**5,
+    'EB': 1024**6
+}
+
+_timesuffixes = {
+    's': 10**0,
+    'ms': 10**(-3),
+    'us': 10**(-6)
+}
+
+tf = api.setupTimeFrame(300, 14*7*24*60*60)
+tf = api.setupTimeFrame(900, 14*7*24*60*60)
+
+for (name, interval, retention_period) in reversed(agts):
+    processed.append(name)
+    
+    print name, interval, retention_period
+
+    tf = api.setupTimeFrame(interval, retention_period)
+    
+    if name != 'none':
+        continue
+
+    data_join = ng_data.join(ng_perf).join(ng_host_service).join(ng_host).join(ng_service) \
+                .join(ng_aggregate_type).join(ng_perf_type)
+    sel = select([ng_host.c.host_name, ng_service.c.service_name, ng_data.c.data_key, \
+            ng_data.c.data_value, ng_data.c.data_unit, ng_perf.c.perf_created, ng_perf_type.c.perftype_name], \
+            from_obj=[data_join]) \
+            .where(ng_aggregate_type.c.aggretype_name==name) \
+            .order_by(ng_perf.c.perf_created.asc(), ng_perf.c.perf_id.asc())
+
+    result = sel.execution_options(stream_results=True).execute()
+    
+    updates = []
+    ts_old = 0
+    
+    row_num = 0
+    
+    '''
+    NOTE: There is no special code for handling check_multi results
+    in the import script. This is due to the fact that it's unfortunatelly
+    not possible to properly import these values due to how Grapher V2
+    is handling perfdata for check_multi. 
+    ''' 
+
+    for row in result:
+        row_num += 1
+        
+        ts = int(time.mktime(row[ng_perf.c.perf_created].timetuple()))
+        
+        if row[ng_data.c.data_unit] == None:
+            number = {
+                'value': float(row[ng_data.c.data_value]),
+                'uom': 'raw'
+            }
+        else:
+            number_raw = "%s%s" % (float(row[ng_data.c.data_value]), row[ng_data.c.data_unit])
+            number = utils.PerfdataParser.parsePerfdataNumber(number_raw)
+        
+        if number == None:
+            continue
+        
+        type = row[ng_perf_type.c.perftype_name] 
+        
+        value = None
+        min = None
+        max = None
+
+        if type == 'RAW':
+            value = number['value']
+        elif type == 'MIN':
+            min = number['value']
+        elif type == 'MAX':
+            max = number['value']
+        else:
+            continue
+        
+        lower_limit= None
+        upper_limit = None
+        
+        plotname = row[ng_data.c.data_key]
+        
+        if plotname[-4:] == '_min' or plotname[-4:] == '_max':
+            continue
+
+        update = (row[ng_host.c.host_name], None, row[ng_service.c.service_name], \
+                  plotname, ts, number['uom'], value, min, max, \
+                  lower_limit, upper_limit, None, None, None, None, None, None)#, interval)
+        
+        updates.append(update)
+        
+        if len(updates) >= 25000:
+            st = time.time()
+            api.insertValueBulk(pickle.dumps(updates))
+            et = time.time()
+            print("%d updates took %f seconds; %d rows (%s -> %s)" % \
+                  (len(updates), et - st, row_num, datetime.fromtimestamp(ts_old), datetime.fromtimestamp(ts)))
+            updates = []
+            ts_old = ts
+            row_num = 0
+
+    if len(updates) > 0:
+        st = time.time()
+        api.insertValueBulk(pickle.dumps(updates))
+        et = time.time()
+        print("%d updates took %f seconds; %d rows (%s -> %s)" % \
+              (len(updates), et - st, row_num, datetime.fromtimestamp(ts_old), datetime.fromtimestamp(ts)))
+    
+    api.disableTimeFrame(tf)

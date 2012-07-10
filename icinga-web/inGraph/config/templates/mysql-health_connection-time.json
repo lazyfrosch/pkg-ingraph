@@ -1,0 +1,96 @@
+{
+    "re": "/connection-time/i",
+
+    "flot": {
+        "series": {
+            "lines": {
+                "show": true,
+                "fill": true,
+                "fillColor": {
+                    "colors": [
+                        {
+                            "opacity": 0.4
+                        },
+                        {
+                            "opacity": 0.9,
+                            "brightness": 0.8
+                        }
+                    ]
+                }
+            }
+        },
+
+        "yaxes": [
+            {
+                "label": "Connection Time"
+            }
+        ]
+    },
+
+    "series": [
+        {
+            "color": "#49A835",
+            "re": "/connection_time$/i",
+            "type": "avg",
+            "id": "avg",
+            "yaxis": 1,
+            "label": "Time",
+            "fillBetween": "min",
+            "lines": {
+                "fillColor": {
+                    "colors": [
+                        "rgba(189, 189, 189, 0.4)",
+                        "rgba(189, 189, 189, 0.9)"
+                    ]
+                }
+            }
+        },
+        {
+            "color": "#BDBDBD",
+            "re": "/connection_time$/i", 
+            "type": "min",
+            "id": "min",
+            "yaxis": 1,
+            "label": "Min",
+            "lines": {
+                "lineWidth": 0,
+                "fill": null
+            }
+        },
+        {
+            "color": "#BDBDBD",
+            "re": "/connection_time$/i",
+            "type": "max",
+            "id": "max",
+            "yaxis": 1,
+            "label": "Max",
+            "fillBetween": "avg",
+            "lines": {
+                "lineWidth": 0,
+                "fillColor": {
+                    "colors": [
+                        "rgba(189, 189, 189, 0.4)",
+                        "rgba(189, 189, 189, 0.9)"
+                    ]
+                }
+            }
+        },
+        {
+            "color": "#FF6E00",
+            "re": "/connection_time$/i", 
+            "type": "warn_upper",
+            "id": "warn",
+            "fillBetween": "max",
+            "label": "Warning",
+            "yaxis": 1
+        }, 
+        {
+            "color": "#CB0C29",
+            "re": "/connection_time$/i", 
+            "type": "crit_upper",
+            "fillBetween": "warn",
+            "label": "Critical",
+            "yaxis": 1
+        }
+    ]
+}

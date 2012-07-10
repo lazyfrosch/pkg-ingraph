@@ -1,0 +1,100 @@
+{
+    "re": "/cpu$/i",
+
+    "flot": {
+        "series": {
+            "lines": {
+                "fill": true,
+                "fillColor": {
+                    "colors": [
+                        {
+                            "opacity": 0.4
+                        },
+                        {
+                            "opacity": 0.8,
+                            "brightness": 0.8
+                        }
+                    ]
+                }
+            },
+            "stack": true
+        },
+
+        "yaxes": [
+            {
+                "label": "CPU",
+                "unit": "percent"
+            }
+        ]
+    },
+
+    "series": [
+        {
+            "re": "/idle$/i",
+            "type": "avg",
+            "id": "idle",
+            "label": "idle",
+            "color": "#49A835",
+            "enabled": false,
+            "yaxis": 1,
+            "lines": {
+                "lineWidth": 0
+            }
+        },
+        {
+            "re": "/user$/i",
+            "type": "avg",
+            "id": "user",
+            "label": "User",
+            "color": "#CB0C29",
+            "yaxis": 1,
+            "lines": {
+                "lineWidth": 0
+            }
+        },
+        {
+            "re": "/system$/i",
+            "type": "avg",
+            "id": "system",
+            "label": "System",
+            "color": "#2D7DB3",
+            "yaxis": 1,
+            "lines": {
+                "lineWidth": 0
+            }
+        },
+        {
+            "re": "/nice$/i",
+            "type": "avg",
+            "id": "nice",
+            "label": "Nice",
+            "color": "#844798",
+            "yaxis": 1,
+            "lines": {
+                "lineWidth": 0
+            }
+        },
+        {
+            "re": "/steal$/i",
+            "type": "avg",
+            "id": "steal",
+            "label": "Steal",
+            "color": "#FF6E00",
+            "yaxis": 1,
+            "lines": {
+                "lineWidth": 0
+            }
+        },
+        {
+            "re": "/iowait$/i",
+            "type": "avg",
+            "id": "io",
+            "label": "I/O Wait",
+            "color": "#AB1852",
+            "yaxis": 1,
+            "lines": {
+                "lineWidth": 0
+            }
+        }
+    ]
+}

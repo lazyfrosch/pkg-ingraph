@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ae:configurations
+	xmlns="http://agavi.org/agavi/config/parts/validators/1.0"
+	xmlns:ae="http://agavi.org/agavi/config/global/envelope/1.0"
+	parent="%core.module_dir%/inGraph/config/validators.xml"
+>
+	<ae:configuration>
+		<validators>
+            <validator name="query" class="string" required="true">
+                <argument>query</argument>
+                <error>Parameter query is mandatory.</error>
+            </validator>
+            <validator name="startx" class="number" required="false">
+                <argument>startx</argument>
+            </validator>
+            <validator name="endx" class="number" required="false">
+                <argument>endx</argument>
+            </validator>
+            <validator name="interval" class="number" required="false">
+                <argument>interval</argument>
+            </validator>
+            <validator name="nullTolerance" class="number" required="false">
+                <argument>nullTolerance</argument>
+            </validator>
+		</validators>
+	</ae:configuration>
+</ae:configurations>

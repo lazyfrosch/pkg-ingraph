@@ -1,0 +1,9 @@
+attic
+build
+dist
+tmp
+*.pyc
+.buildpath
+.project
+*.egg-info
+.pydevproject
