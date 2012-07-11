@@ -1,3 +1,16 @@
+#-- git-buildpackage part --
+debian/*.log
+debian/*.substvars
+debian/*.debhelper
+debian/files
+debian/tmp/
+debian/ingraph/
+debian/ingraph-bin/
+debian/ingraph-web/
+debian/icinga-web-ingraph/
+.pc/
+
+#-- the following ignores are from the original ingraph tarball --
 attic
 build
 dist

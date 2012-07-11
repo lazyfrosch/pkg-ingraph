@@ -1,0 +1,2 @@
+-- empty install schema for MySQL, so dbconfig-common creates the database
+

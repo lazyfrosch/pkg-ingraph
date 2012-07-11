@@ -1,0 +1,15 @@
+#!/usr/bin/make -f
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
+
+%:
+	dh $@ --with python2
+
+override_dh_clean:
+	rm -rf ingraph.egg-info/
+	dh_clean
+

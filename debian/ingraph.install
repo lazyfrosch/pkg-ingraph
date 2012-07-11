@@ -1,0 +1,6 @@
+/etc/ingraph
+/usr/bin
+/usr/lib/python2.6/dist-packages/ingraph*
+/usr/lib/python2.7/dist-packages/ingraph*
+debian/mysql /usr/share/dbconfig-common/data/ingraph/install
+#DOCS#
