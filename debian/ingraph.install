@@ -1,5 +1,6 @@
-/etc/ingraph
-/usr/bin
+/etc/ingraph/ingraph-aggregates.conf
+/usr/bin/ingraphd /usr/sbin
+/usr/bin/ingraph-collectord /usr/sbin
 /usr/lib/python2.6/dist-packages/ingraph*
 /usr/lib/python2.7/dist-packages/ingraph*
 debian/mysql /usr/share/dbconfig-common/data/ingraph/install

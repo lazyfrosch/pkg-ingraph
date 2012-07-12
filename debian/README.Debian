@@ -1,6 +1,44 @@
 ingraph for Debian
 ------------------
 
-<possible notes regarding this package - if none, delete this file>
+[ setting out perfdata in Icinga ]
 
- -- Markus Frosch <markus@lazyfrosch.de>  Tue, 10 Jul 2012 17:37:52 +0200
+You have to configure Icinga to export its perfdata to the right spot
+and format.
+
+/etc/icinga/icinga.cfg:
+--- snip ---
+process_performance_data=1
+
+host_perfdata_file=/var/spool/ingraph/perfdata/host-perfdata
+host_perfdata_file_template=DATATYPE::HOSTPERFDATA\tTIMET::$TIMET$\tHOSTNAME::$HOSTNAME$\tHOSTPERFDATA::$HOSTPERFDATA$\tHOSTCHECKCOMMAND::$HOSTCHECKCOMMAND$\tHOSTSTATE::$HOSTSTATE$\tHOSTSTATETYPE::$HOSTSTATETYPE$
+host_perfdata_file_mode=a
+host_perfdata_file_processing_interval=30
+host_perfdata_file_processing_command=process-host-perfdata-file
+
+service_perfdata_file=/var/spool/ingraph/perfdata/service-perfdata
+service_perfdata_file_template=DATATYPE::SERVICEPERFDATA\tTIMET::$TIMET$\tHOSTNAME::$HOSTNAME$\tSERVICEDESC::$SERVICEDESC$\tSERVICEPERFDATA::$SERVICEPERFDATA$\tSERVICECHECKCOMMAND::$SERVICECHECKCOMMAND$\tHOSTSTATE::$HOSTSTATE$\tHOSTSTATETYPE::$HOSTSTATETYPE$\tSERVICESTATE::$SERVICESTATE$\tSERVICESTATETYPE::$SERVICESTATETYPE$
+service_perfdata_file_mode=a
+service_perfdata_file_processing_interval=30
+service_perfdata_file_processing_command=process-service-perfdata-file
+--- snip ---
+
+/etc/icinga/commands.cfg
+--- snip ---
+define command {
+    command_name    process-service-perfdata-file
+    command_line    test -s /var/spool/ingraph/perfdata/service-perfdata && mv /var/spool/ingraph/perfdata/service-perfdata /var/spool/ingraph/perfdata/service-perfdata.$TIMET$
+}
+
+define command {
+    command_name    process-host-perfdata-file
+    command_line    test -s /var/spool/ingraph/perfdata/host-perfdata && mv /var/spool/ingraph/perfdata/host-perfdata /var/spool/ingraph/perfdata/host-perfdata.$TIMET$
+}
+--- snip ---
+
+The files /var/spool/ingraph/perfdata/host-perfdata.XXXX will be read by
+the collector daemon, preprocessed and then written to the database via
+the ingrapd daemon.
+
+
+ -- Markus Frosch <markus@lazyfrosch.de>  Tue, 12 Jul 2012 16:26:15 +0200

@@ -1,5 +1,6 @@
-ingraph (1.0-1) unstable; urgency=low
+ingraph (1.0-1~beta+0) unstable; urgency=low
 
-  * Initial release
+  * Initial beta release
+  * see TODO.Debian for things to work on
 
- -- Markus Frosch <markus@lazyfrosch.de>  Tue, 11 Jul 2012 11:16:52 +0200
+ -- Markus Frosch <markus@lazyfrosch.de>  Tue, 12 Jul 2012 16:46:52 +0200

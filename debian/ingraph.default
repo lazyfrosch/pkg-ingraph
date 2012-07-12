@@ -2,9 +2,9 @@
 # sourced by /etc/init.d/ingraph
 # installed at /etc/default/ingraph by the maintainer scripts
 
-#
-# This is a POSIX shell fragment
-#
+# Options for ingraphd
+INGRAPHD_OPTS="-o /var/log/ingraphd.log"
 
-# Additional options that are passed to the Daemon.
-DAEMON_OPTS=""
+# Options for ingraph-collectord
+INGRAPHCOLLECTORD_OPTS="-o /var/log/ingraph-collectord.log -P /var/spool/ingraph/perfdata -m REMOVE"
+

@@ -7,9 +7,22 @@
 export DH_OPTIONS
 
 %:
-	dh $@ --with python2
+	dh $@ --with python2 --with quilt
 
 override_dh_clean:
 	rm -rf ingraph.egg-info/
 	dh_clean
+
+override_dh_install:
+	dh_install
+	# cleanup some creepy executable bits
+	chmod a-x debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/lib/php/vendor/FPDF/font/*.php
+	chmod a-x debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/lib/nodejs/ingraph-renderer.js
+	# remove the inGraph.xml.in
+	rm -f debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/config/inGraph.xml.in
+	# install config as examples
+	cp debian/tmp/etc/ingraph/ingraph-database.conf debian/ingraph/etc/ingraph/ingraph-database.conf.example
+	cp debian/tmp/etc/ingraph/ingraph-xmlrpc.conf debian/ingraph/etc/ingraph/ingraph-xmlrpc.conf.example
+
+# vi: set noexpandtab ts=4 sw=4 :
 

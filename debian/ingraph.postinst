@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # postinst script for ingraph
 #
 # see: dh_installdeb(1)
@@ -16,6 +16,96 @@ set -e
 #          <conflicting-package> <version>
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
+
+uriescape() {
+    echo "$(perl -MCGI::Util -e 'print CGI::Util::escape($ARGV[0]);' "$1")"
+}
+
+generate_dbconf() {
+    local file="/etc/ingraph/ingraph-database.conf"
+    local dbconfig="/etc/dbconfig-common/ingraph.conf"
+
+    # load dbconfig file
+    if [ -f "$dbconfig" ]; then
+        source $dbconfig
+    else
+        echo "database config failed: file $dbconfig does not exist" >&2
+        return
+    fi
+
+    # leave when dbconfig not enabled
+    if [ "$dbc_install" != "true" ]; then
+        echo "database config failed: dbconfig-common for \"$(basename $dbconfig .conf)\" not enabled!" 
+        return
+    fi
+
+    # create tempfile
+    local tempfile=$(tempfile -m 600 -p "$(basename $file)")
+
+    # add a colon to port
+    [ "$dbc_dbport" != "" ] && dbc_dbport=":$dbc_dbport"
+    dbc_edbuser=$(uriescape $dbc_dbuser)
+    dbc_edbpass=$(uriescape $dbc_dbpass)
+    dbc_edbname=$(uriescape $dbc_dbname)
+    
+    # allow pgsql socket
+    [ "$dbc_server" = "" ] && [ "$dbc_authmethod_user" = "ident" ] && dbc_server="%2Fvar%2Frun%2Fpostgresql"
+
+    # uri escape the vars
+    # build the dsn
+    local dsn="$dbc_dbtype://$dbc_edbuser:$dbc_edbpass@${dbc_server:=localhost}$dbc_dbport/$dbc_edbname"
+
+    # write xml to temp
+    (
+    echo "#################################"
+    echo "# database configuration"
+    echo "# "
+    echo "# this file is auto generated"
+    echo "# based on dbconfig-common settings"
+    echo "#################################"
+    echo "dsn='$dsn'"
+    echo ""
+    ) > $tempfile
+
+    # replace the file with ucf
+    ucf --debconf-ok $tempfile $file
+    
+    echo "database config successful: $file"
+    rm -f $tempfile 
+}
+
+generate_xmlrpc() {
+    local password="$1"
+    local file="/etc/ingraph/ingraph-xmlrpc.conf"
+
+    # create tempfile
+    local tempfile=$(tempfile -m 600 -p "$(basename $file)")
+
+    # escape quotes
+    e_password="$(echo "$password" | sed s/\'/\\\'/g)"
+
+    # write data to temp
+    (
+    echo "#################################"
+    echo "# xmlrpc configuration"
+    echo "# "
+    echo "# this file is auto generated"
+    echo "# see ingraph-xmlrpc.conf.example"
+    echo "#################################"
+    echo "xmlrpc_username = 'ingraph'"
+    echo "xmlrpc_password = '$e_password'"
+    echo "xmlrpc_address = '127.0.0.1'"
+    echo "xmlrpc_port = 5000"
+    echo ""
+    ) > $tempfile
+
+    # replace the file with ucf
+    ucf --debconf-ok $tempfile $file
+    
+    echo "xmlrpc config successful: $file"
+    rm -f $tempfile 
+}
+
 
 setperm() {
     local user="$1"
@@ -43,10 +133,31 @@ case "$1" in
     . /usr/share/debconf/confmodule
     . /usr/share/dbconfig-common/dpkg/postinst
     dbc_go ingraph $@
+    
+    generate_dbconf
 
-    # permissions TODO
-    #setperm root ingraph 0640 /etc/ingraph/ingraph-database.conf
-    #setperm root ingraph 0640 /etc/ingraph/ingraph-xmlrpc.conf
+    # xml rpc config
+    db_get ingraph/xmlrpc-password || true
+    xmlrpcpw="$RET"
+    
+    if [ "$xmlrpcpw" != "" ]; then
+        generate_xmlrpc "$xmlrpcpw"
+    else
+        echo "Warning: XMLRPC password is empty!" >&2
+    fi
+
+    # permissions for config
+    [ -f /etc/ingraph/ingraph-database.conf ] && setperm ingraph ingraph 0640 /etc/ingraph/ingraph-database.conf
+    [ -f /etc/ingraph/ingraph-xmlrpc.conf ] && setperm ingraph ingraph 0640 /etc/ingraph/ingraph-xmlrpc.conf
+    
+    # spooldir permissions
+    setperm ingraph nagios 0770 /var/spool/ingraph/perfdata
+
+    # prepare logfiles
+    [ -f /var/log/ingraphd.log ] || touch /var/log/ingraphd.log
+    [ -f /var/log/ingraph-collectord.log ] || touch /var/log/ingraph-collectord.log
+    setperm ingraph adm 0640 /var/log/ingraphd.log
+    setperm ingraph adm 0640 /var/log/ingraph-collectord.log
 
     ;;
 

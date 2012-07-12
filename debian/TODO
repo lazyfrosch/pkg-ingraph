@@ -1,0 +1,10 @@
+ingraph for Debian
+==================
+
+TODO list:
+
+* better output handling for the daemons on start (maybe patch upstream)
+* remove fd 3 close form init script (upstream patch)
+
+ -- Markus Frosch <markus@lazyfrosch.de>  Wed, 12 Jul 2012 16:40:06 +0200
+

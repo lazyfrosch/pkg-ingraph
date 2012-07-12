@@ -18,31 +18,31 @@ set -e
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-if [ -f /usr/share/debconf/confmodule ]; then
-    . /usr/share/debconf/confmodule 
-fi      
-if [ -f /usr/share/dbconfig-common/dpkg/postrm ]; then
-    . /usr/share/dbconfig-common/dpkg/postrm
-    dbc_go ingraph $@
-fi      
-
 case "$1" in
     purge)
-    # cleanup files
-    rm -f /var/log/ingraphd.log*
-    rm -f /var/log/ingraph-collectord.log*
-    rm -f /var/run/ingraphd.pid
-    rm -f /var/run/ingraph-collectord.pid
-    rm -rf /var/spool/ingraph/perfdata
+    # clean config
+    rm -f /etc/ingraph/icinga-web.xml
+    ucf --purge /etc/ingraph/icinga-web.xml
 
-    rm -f /etc/ingraph/ingraph-database.conf
-    ucf --purge /etc/ingraph/ingraph-database.conf
-    rm -f /etc/ingraph/ingraph-xmlrpc.conf
-    ucf --purge /etc/ingraph/ingraph-xmlrpc.conf
-    
+    # clear cache
+    if [ -x /usr/lib/icinga-web/bin/clearcache.sh ]; then
+        echo "clearing icinga-web's cache..."
+        /usr/lib/icinga-web/bin/clearcache.sh || true
+    else
+        echo "can't clear  icinga-web's cache, /usr/lib/icinga-web/bin/clearcache.sh not executeable!" >&2
+    fi
+
     ;;
     
     remove|upgrade)
+
+    # clear cache
+    if [ -x /usr/lib/icinga-web/bin/clearcache.sh ]; then
+        echo "clearing icinga-web's cache..."
+        /usr/lib/icinga-web/bin/clearcache.sh || true
+    else
+        echo "can't clear  icinga-web's cache, /usr/lib/icinga-web/bin/clearcache.sh not executeable!" >&2
+    fi
 
     ;;
     

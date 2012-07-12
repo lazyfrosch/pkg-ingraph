@@ -9,6 +9,8 @@ debian/ingraph-bin/
 debian/ingraph-web/
 debian/icinga-web-ingraph/
 .pc/
+.*.swp
+.*.swo
 
 #-- the following ignores are from the original ingraph tarball --
 attic

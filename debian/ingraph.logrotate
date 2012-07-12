@@ -1,0 +1,13 @@
+/var/log/ingraph-collectord.log /var/log/ingraphd.log {
+    missingok
+    notifempty
+    create 640 ingraph adm
+    weekly
+    rotate 4
+    compress
+    sharedscripts
+    postrotate
+        invoke-rc.d ingraph restart >/dev/null
+    endscript
+}
+

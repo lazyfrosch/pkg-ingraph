@@ -1,0 +1,18 @@
+Description: add include from config file in /etc
+Author: Markus Frosch <markus@lazyfrosch.de>
+Origin: vendor
+Last-Update: 2012-07-12
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/icinga-web/inGraph/config/module.xml
++++ b/icinga-web/inGraph/config/module.xml
+@@ -43,6 +43,9 @@
+ 
+             <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="inGraph.xml" />
+ 
++            <!-- include a file in /etc for Debian configuration -->
++            <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="/etc/ingraph/icinga-web.xml" />
++
+         </module>  
+ 
+     </ae:configuration>

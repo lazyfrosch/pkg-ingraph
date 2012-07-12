@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://agavi.org/agavi/config/parts/module/1.0"
+    xmlns:ae="http://agavi.org/agavi/config/global/envelope/1.0">
+<!--
+this is the /etc location of
+/usr/share/icinga-web/app/modules/inGraph/config/inGraph.xml
+
+linked by symlink
+
+please make sure to run /usr/lib/icinga-web/bin/clearcache.sh after editing
+
+ -Markus Frosch <markus@lazyfrosch.de>
+-->
+
+    <setting name="xmlrpc">
+        <ae:parameter name="host">localhost</ae:parameter>
+        <ae:parameter name="port">5000</ae:parameter>
+        <ae:parameter name="user">ingraph</ae:parameter>
+        <ae:parameter name="pass">changeme</ae:parameter>
+    </setting>
+
+</settings>
