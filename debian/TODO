@@ -3,6 +3,7 @@ ingraph for Debian
 
 TODO list:
 
+* expand copyright file
 * better output handling for the daemons on start (maybe patch upstream)
 * remove fd 3 close form init script (upstream patch)
 

@@ -5,6 +5,7 @@ Source: https://www.netways.org/projects/ingraph/files
 Files: *
 Copyright: 2011-2012 Eric Lippmann <eric.lippmann@netways.de>
            2011-2012 Gunnar Beutner <gunnar.beutner@netways.de>
+           2011-2012 NETWAYS GmbH <support@netways.de>
 License: GPL-2+
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -28,6 +29,7 @@ License: GPL-2+
 
 Files: debian/*
 Copyright: 2012 Markus Frosch <markus@lazyfrosch.de>
+           2012 NETWAYS GmbH <support@netways.de>
 License: GPL-2+
  This package is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
