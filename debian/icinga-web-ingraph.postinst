@@ -93,7 +93,7 @@ case "$1" in
     fi
 
     # config permissions
-    setperm ingraph www-data 0640 /etc/ingraph/icinga-web.xml
+    setperm root www-data 0640 /etc/ingraph/icinga-web.xml
     
     ;;
 
