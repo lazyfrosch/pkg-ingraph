@@ -1,3 +1,9 @@
+ingraph (1.0-1~netwaysbp60+0) squeeze-backports; urgency=low
+
+  * backported to squeeze without changes
+
+ -- Markus Frosch <markus@lazyfrosch.de>  Fri, 13 Jul 2012 10:28:46 +0200
+
 ingraph (1.0-1~netways) unstable; urgency=low
 
   * [17a11ab] avoid using ingraph system user in icinga-web module
