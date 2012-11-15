@@ -1,0 +1,16 @@
+Description: replaced shipped FPDF with a dependency
+Author: Markus Frosch <markus@lazyfrosch.de>
+Last-Update: 2012-11-15
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/icinga-web/inGraph/lib/php/Pdf.php
++++ b/icinga-web/inGraph/lib/php/Pdf.php
+@@ -4,7 +4,7 @@
+  * Pdf class
+  */
+ 
+-require_once dirname(dirname(__FILE__)) . '/vendor/FPDF/fpdf.php';
++require_once '/usr/share/php/fpdf/fpdf.php';
+ 
+ /**
+  * This class will create PDFs for inGraph - still under HEAVVY construction

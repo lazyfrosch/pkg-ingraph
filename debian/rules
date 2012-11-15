@@ -37,6 +37,8 @@ override_dh_install:
 	       debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/config/inGraph.xml
 	sed -i -e s,@TEMPLATE_SUFFIX@,, \
 	       debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/config/module.xml
+	# clean libraries which are replaced by a dependency
+	rm -rf debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/lib/php/vendor/
 
 # vi: set noexpandtab ts=4 sw=4 :
 

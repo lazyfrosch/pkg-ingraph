@@ -41,7 +41,7 @@ Description: Icinga/Nagios graphing addon for performance data
 
 Package: icinga-web-ingraph
 Architecture: all
-Depends: icinga-web (>= 1.7.0), php5-curl, php5-xmlrpc, ucf, ${misc:Depends}
+Depends: icinga-web (>= 1.7.0), php5-curl, php5-xmlrpc, ucf, php-fpdf (>= 3:1.7), ${misc:Depends}
 Recommends: ingraph (= ${source:Version})
 Description: Icinga/Nagios graphing addon for performance data
  inGraph is a flexible, open source charting tool for Icinga and Nagios,
