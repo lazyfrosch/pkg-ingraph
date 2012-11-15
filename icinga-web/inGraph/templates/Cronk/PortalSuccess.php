@@ -61,10 +61,15 @@ Cronk.util.initEnvironment(<?php CronksRequestUtil::echoJsonString($rd); ?>, fun
         var applyHandler = function (btn) {
             var items = [],
                 formValues = builder.getForm().getValues(),
-                columnDef = formValues.columns;
+                columnDef = formValues.columns,
+                rowHeightDef = formValues.rowHeight;
 
             if ( ! Ext.isArray(columnDef)) {
                 columnDef = [columnDef];
+            }
+
+            if ( ! Ext.isArray(rowHeightDef)) {
+                rowHeightDef = [rowHeightDef];
             }
 
             Ext.each(columnDef, function (str, rowIndex) {
@@ -82,11 +87,13 @@ Cronk.util.initEnvironment(<?php CronksRequestUtil::echoJsonString($rd); ?>, fun
                         return true;
                     }
 
-                    var flex = parseInt(column);
+                    var flex = parseInt(column),
+                        rowHeight = rowHeightDef.hasOwnProperty(rowIndex) ? parseInt(rowHeightDef[rowIndex]) : 1;
 
                     items.push({
                         flex: flex,
                         row: rowIndex + 1,
+                        rowHeight: rowHeight,
                         xtype: 'xigportalmenuitem'
                     });
                 }); // Eof each columns
@@ -95,7 +102,11 @@ Cronk.util.initEnvironment(<?php CronksRequestUtil::echoJsonString($rd); ?>, fun
             var portal = addPortal.call(this, items);
 
             // Save state manually
-            Ext.state.Manager.set(portal.stateId, portal.getState());
+            Ext.state.Manager.getProvider().set(portal.stateId, portal.getState());
+
+            this.getParent().on('removed', function () {
+                Ext.state.Manager.getProvider().clear(portal.stateId);
+            });
 
             // Button -> Tbar -> Window
             var win = btn.ownerCt.ownerCt;
@@ -107,7 +118,7 @@ Cronk.util.initEnvironment(<?php CronksRequestUtil::echoJsonString($rd); ?>, fun
             title: 'inGraph-Portal',
             autoScroll: true,
             modal: true,
-            width: 400,
+            width: 500,
             height: 200,
             items: builder,
             buttons: [
@@ -131,6 +142,7 @@ Cronk.util.initEnvironment(<?php CronksRequestUtil::echoJsonString($rd); ?>, fun
 
         if ( ! extState) {
             portal.applyState(cronkState);
+            portal.doLayout();
         }
     } // Eof has state
 }); // Eof initEnvironment

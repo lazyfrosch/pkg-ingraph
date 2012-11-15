@@ -1,9 +1,5 @@
-attic
-build
-dist
-tmp
+.*
 *.pyc
-.buildpath
-.project
-*.egg-info
-.pydevproject
+MANIFEST
+contrib/init.d/ingraph-collector
+setup.py

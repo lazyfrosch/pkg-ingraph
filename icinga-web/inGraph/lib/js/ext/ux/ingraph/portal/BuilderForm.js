@@ -75,6 +75,7 @@
                 defaults: {
                     xtype: 'container',
                     layout: 'form',
+                    labelWidth: 50,
                     flex: 1
                 },
                 items: [
@@ -92,6 +93,17 @@
                     {
                         items: [
                             {
+                                xtype: 'numberfield',
+                                fieldLabel: _('Height'),
+                                name: 'rowHeight',
+                                value: 250,
+                                anchor: '95%'
+                            }
+                        ]
+                    },
+                    {
+                        items: [
+                            {
                                 xtype: 'textfield',
                                 fieldLabel: String.format(
                                     '<span ext:qtip="{0}">{1}</span>',
@@ -99,8 +111,9 @@
                                     _('Columns')
                                 ),
                                 name: 'columns',
-                                anchor: '95%',
-                                stripCharsRe: /[^\d, ]+/g
+                                value: 1,
+                                stripCharsRe: /[^\d, ]+/g,
+                                anchor: '95%'
                             }
                         ]
                     }

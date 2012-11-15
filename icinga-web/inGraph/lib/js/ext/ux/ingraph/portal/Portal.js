@@ -20,11 +20,11 @@
 (function () {
     "use strict";
 
-    Ext.ns('Ext.ux.ingraph.portal.Portal');
+    Ext.ns('Ext.ux.ingraph.portal');
 
     /**
      * @class Ext.ux.ingraph.portal.Portal
-     * @extends Ext.Panel
+     * @extends Ext.Container
      * @namespace Ext.ux.ingraph.portal
      * @author Eric Lippmann <eric.lippmann@netways.de>
      * @constructor
@@ -32,21 +32,22 @@
      * A config object.
      * @xtype xigportal
      */
-    Ext.ux.ingraph.portal.Portal = Ext.extend(Ext.Panel, {
+    Ext.ux.ingraph.portal.Portal = Ext.extend(Ext.Container, {
         /**
          * @cfg {Object} layout
          * @hide
          */
-        layout: 'vbox',
+        layout: 'anchor',
 
         /**
-         * @cfg {Object} layoutConfig
+         * @cfg {Boolean} autoScroll
          * @hide
          */
-        layoutConfig: {
-            align: 'stretch',
-            pack: 'start',
-            defaultMargins: '5 0 5 5'
+        autoScroll: true,
+
+
+        style: {
+            paddingBottom: '5px'
         },
 
         /**
@@ -57,12 +58,16 @@
         defaults: {
             xtype: 'container',
             layout: 'hbox',
+            height: 250,
+            style: {
+                marginTop: '5px',
+                marginLeft: '5px'
+            },
             layoutConfig: {
                 align: 'stretch',
                 pack: 'start',
                 defaultMargins: '0 5 0 0'
-            },
-            flex: 1
+            }
         },
 
         // private
@@ -87,6 +92,7 @@
 
                 if (rowIndex > rows.length) {
                     rows.push({
+                        height: item.rowHeight,
                         items: []
                     });
                 }
@@ -103,14 +109,14 @@
          * @return {Object}
          */
         getState: function () {
-            // Collect state of each child item. This is either a view or a
-            // portalmenuitem
+            // Collect state of each child item. This is either a view, a
+            // portalmenuitem or an empty container
             var columns = [];
             this.items.each(function (row) {
                 row.items.each(function (column) {
                     var state = column.getState();
                     // Grab position of column
-                    Ext.copyTo(state, column, ['row', 'flex']);
+                    Ext.copyTo(state, column, ['row', 'flex', 'rowHeight']);
                     columns.push(state);
                 });
             });

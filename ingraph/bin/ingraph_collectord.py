@@ -31,6 +31,7 @@ import logging
 import ingraph
 from ingraph import daemon
 from ingraph import utils
+import ingraph.log
 
 
 class UnsupportedDaemonFunction(Exception): pass
@@ -39,7 +40,7 @@ class UnsupportedDaemonFunction(Exception): pass
 class Collectord(daemon.UnixDaemon):
     name = 'inGraph-collector'
     check_multi_regex = re.compile('^([^:]+::[^:]+)::([^:]+)$')
-    
+
     def __init__(self, perfdata_dir, pattern, limit, sleeptime, mode, format,
                  **kwargs):
         self.perfpattern = perfdata_dir + '/' + pattern
@@ -53,7 +54,11 @@ class Collectord(daemon.UnixDaemon):
         logdata = {}
 
         for nvpair in tokens:
-            (key, value) = nvpair.split('::', 1)
+            try:
+                (key, value) = nvpair.split('::', 1)
+            except:
+                print "Invalid PNP key-value pair:", nvpair
+                continue
 
             if key == 'TIMET':
                 key = 'timestamp'
@@ -70,6 +75,7 @@ class Collectord(daemon.UnixDaemon):
             logdata[key] = value
 
         if 'perf' not in logdata or 'host' not in logdata or 'status' not in logdata:
+            print "Update is missing host, status or performance data:", tokens
             return False
 
         if 'timestamp' not in logdata:
@@ -85,7 +91,7 @@ class Collectord(daemon.UnixDaemon):
             return False
         elif len(tokens) < 5:
             tokens.append(time())
-        
+
         logdata = {
             'host': tokens[0],
             'service': tokens[1],
@@ -106,66 +112,66 @@ class Collectord(daemon.UnixDaemon):
 
         if logdata == False:
             return []
-        
+
         perfresults = utils.PerfdataParser.parse(logdata['perf'])
-        
+
         is_multidata = False
-        
+
         updates = []
         for plotname in perfresults:
             match = Collectord.check_multi_regex.match(plotname)
-                    
+
             perfresult = perfresults[plotname]
-    
+
             uom = perfresult['raw']['uom']
             raw_value = str(perfresult['raw']['value'])
-            
+
             warn_lower = None
             warn_upper = None
             warn_type = None
-    
+
             if 'warn' in perfresult:
                 if perfresult['warn']['lower']['value'] != None:
                     warn_lower = str(perfresult['warn']['lower']['value'])
-                    
+
                 if perfresult['warn']['upper']['value'] != None:
                     warn_upper = str(perfresult['warn']['upper']['value'])
-    
+
                 warn_type = str(perfresult['warn']['type'])
-            
+
             crit_lower = None
             crit_upper = None
             crit_type = None
-    
+
             if 'crit' in perfresult:
                 if perfresult['crit']['lower']['value'] != None:
                     crit_lower = str(perfresult['crit']['lower']['value'])
-                    
+
                 if perfresult['crit']['upper']['value'] != None:
                     crit_upper = str(perfresult['crit']['upper']['value'])
-    
+
                 crit_type = str(perfresult['crit']['type'])
-    
+
             if 'min' in perfresult:
                 min_value = str(perfresult['min']['value'])
             else:
                 min_value = None
-            
+
             if 'max' in perfresult:
                 max_value = str(perfresult['max']['value'])
             else:
                 max_value = None
-    
+
             upd_parentservice = None
             upd_service = logdata['service']
             upd_plotname = plotname
-    
+
             if match:
                 is_multidata = True
-                
+
                 multi_service = match.group(1)
                 upd_plotname = match.group(2)
-    
+
             if is_multidata:
                 upd_parentservice = logdata['service']
                 upd_service = multi_service
@@ -179,40 +185,42 @@ class Collectord(daemon.UnixDaemon):
                       pluginstatus)
             updates.append(update)
         return updates
-        
+
     def before_daemonize(self):
         self.logger.info("Starting %s..." % self.name)
         config = utils.load_config('ingraph-xmlrpc.conf')
         config = utils.load_config('ingraph-aggregates.conf', config)
-        
+
         url = utils.get_xmlrpc_url(config)
         api = xmlrpclib.ServerProxy(url, allow_none=True)
-        
+
         tfs = api.getTimeFrames()
         intervals = tfs.keys()
-            
+
         for aggregate in config['aggregates']:
             interval = aggregate['interval']
-            
+
             if str(interval) in intervals:
                 intervals.remove(str(interval))
-            
+
             if 'retention-period' in aggregate:
                 retention_period = aggregate['retention-period']
             else:
                 retention_period = None
-            
+
             api.setupTimeFrame(interval, retention_period)
-        
-#        for interval in intervals:
-#            tf = tfs[interval]
-#            print tf
-            
+
+        for interval in intervals:
+            tf = tfs[interval]
+            api.disableTimeFrame(tf['id'])
+
         self.api = api
-    
+
     def run(self):
+        last_flush = time.time()
+        updates = []
         while True:
-            updates = []
+            lines = 0
             files = glob.glob(self.perfpattern)[:self.limit]
             if files:
                 input = fileinput.input(files)
@@ -220,6 +228,9 @@ class Collectord(daemon.UnixDaemon):
                     update = self._prepare_update(line)
                     if update:
                         updates.extend(update)
+                    lines += 1
+
+            if last_flush + 30 < time.time() or len(updates) >= 25000:
                 if updates:
                     updates_pickled = pickle.dumps(updates)
                     st = time.time()
@@ -231,8 +242,13 @@ class Collectord(daemon.UnixDaemon):
                         else:
                             break
                     et = time.time()
-                    print "%d updates (%d lines) took %f seconds" % \
-                          (len(updates), input.lineno(), et - st)
+                    print "%d updates (approx. %d lines) took %f seconds" % \
+                          (len(updates), lines, et - st)
+                updates = []
+                last_flush = time.time()
+                lines = 0
+
+            if files:
                 if self.mode == 'BACKUP':
                     for file in files:
                         shutil.move(file, file + '.bak')
@@ -240,75 +256,61 @@ class Collectord(daemon.UnixDaemon):
                     for file in files:
                         os.remove(file)
             time.sleep(self.sleeptime)
-            
-            
-class Option(optparse.Option):
-    MODES = ['REMOVE', 'BACKUP']
 
-    def __init__(self, *opts, **attrs):
-        Option.TYPES = optparse.Option.TYPES + ('mode',)
-        Option.TYPE_CHECKER = copy.copy(optparse.Option.TYPE_CHECKER)
-        Option.TYPE_CHECKER['mode'] = self.check_mode
-        optparse.Option.__init__(self, *opts, **attrs)
-    
-    def check_mode(self, option, opt, value):
-        value = value.upper()
-        if value not in Option.MODES:
-            raise optparse.OptionValueError(
-                'Option %s: invalid mode. Expected is one of: %s.' %
-                (value, ', '.join(Option.Modes)))
-        return value
-    
-    
+
 def main():
-    daemon_functions = ['start', 'stop', 'restart', 'status']
-    usage = 'Usage: %%prog [options] %s' % '|'.join(daemon_functions)
-    parser = optparse.OptionParser(option_class=Option, usage=usage,
+    DAEMON_FUNCTIONS = ['start', 'stop', 'restart', 'status']
+    LOG_LVLS = ('INFO', 'WARNING', 'ERROR', 'CRITICAL')
+    PERFDATA_FORMATS = ('ingraph', 'pnp')
+    PERFDATA_MODES = ('BACKUP', 'REMOVE')
+    usage = 'Usage: %%prog [options] {%s}' % '|'.join(DAEMON_FUNCTIONS)
+    parser = optparse.OptionParser(usage=usage,
                                    version='%%prog %s' % ingraph.__version__)
     parser.add_option('-f', '--foreground', dest='detach', default=True,
-                      action='store_false',
-                      help='run in foreground')
+                      action='store_false', help="run in foreground")
     parser.add_option('-d', '--chdir', dest='chdir', metavar='DIR',
                       default='/etc/ingraph',
-                      help='change to directory DIR [default: %default]')
+                      help="change to directory DIR [default: %default]")
     parser.add_option('-p', '--pidfile', dest='pidfile', metavar='FILE',
                       default='/var/run/ingraph/ingraph-collectord.pid',
                       help="pidfile FILE [default: %default]")
     parser.add_option('-o', '--logfile', dest='logfile', metavar='FILE',
-                      default=None, help='logfile FILE [default: %default]')
+                      default=None, help="logfile FILE [default: %default]")
     parser.add_option('-P', '--perfdata-dir', dest='perfdata_dir',
                       default='/usr/local/icinga/var/perfdata',
-                      metavar='DIR', help='perfdata directory DIR '
-                      '[default: %default]')
+                      metavar='DIR', help="perfdata directory DIR "
+                                          "[default: %default]")
     parser.add_option('-e', '--pattern', dest='pattern',
-                      help='shell pattern PATTERN [default: %default]',
+                      help="shell pattern PATTERN [default: %default]",
                       default='*-perfdata.*[0-9]')
     parser.add_option('-m', '--mode', dest='mode', default='BACKUP',
-                      type='mode',
-                      help='backup or remove perfdata files '
-                      'after processing [default: %default]')
+                      choices=PERFDATA_MODES,
+                      help="perfdata files post processing, one of: %s "
+                           "[default: %%default]" % ', '.join(PERFDATA_MODES))
     parser.add_option('-l', '--limit', dest='limit', type='int',
                       help='limit files [default: %default]', default=50)
     parser.add_option('-s', '--sleeptime', dest='sleeptime', type='int',
-                      help='seconds to sleep [default: %default]',
+                      help="seconds to sleep [default: %default]",
                       default=30)
     parser.add_option('-u', '--user', dest='user', default=None)
     parser.add_option('-g', '--group', dest='group', default=None)
     parser.add_option('-F', '--format', dest='format', default='pnp',
-                      metavar='FORMAT', help='perfdata format, "ingraph" '
-                      'or "pnp" [default: %default]')
+                      choices=PERFDATA_FORMATS,
+                      help="perfdata format, one of: %s "
+                           "[default: %%default]" % ', '.join(PERFDATA_FORMATS))
     parser.add_option('-L', '--loglevel', dest='loglevel', default='INFO',
-                      help='the log level (INFO, WARNING, ERROR, CRITICAL), ' +
-                           '[default: %default]')
+                      choices=LOG_LVLS,
+                      help="the log level, one of: %s "
+                           "[default: %%default]" % ', '.join(LOG_LVLS))
     (options, args) = parser.parse_args()
-    
+
     try:
-        if args[0] not in daemon_functions:
+        if args[0] not in DAEMON_FUNCTIONS:
             raise UnsupportedDaemonFunction()
     except (IndexError, UnsupportedDaemonFunction):
-            parser.print_help()
+            parser.print_usage()
             sys.exit(1)
-            
+
     collectord = Collectord(perfdata_dir=options.perfdata_dir,
                             pattern=options.pattern,
                             limit=options.limit,
@@ -317,37 +319,39 @@ def main():
                             chdir=options.chdir,
                             detach=options.detach,
                             pidfile=options.pidfile,
-                            format=options.format)
+                            format=options.format,
+                            log=options.logfile)
+    
     if options.logfile and options.logfile != '-':
-        collectord.addLoggingHandler(logging.FileHandler(options.logfile))
-    if options.loglevel not in ['INFO', 'WARNING', 'ERROR', 'CRITICAL']:
-        collectord.logger.error('Invalid loglevel: %s' % (options.loglevel))
-        sys.exit(1)
+        collectord.stdout_logger = ingraph.log.FileLikeLogger(collectord.logger,
+                                                              logging.INFO)
+        collectord.stderr_logger = ingraph.log.FileLikeLogger(collectord.logger,
+                                                              logging.CRITICAL)
+    collectord.logger.setLevel(getattr(logging, options.loglevel))
     if options.user:
         from pwd import getpwnam
         try:
-            collectord.uid = getpwnam(options.user)[2]
+            collectord.uid = getpwnam(options.user).pw_uid
         except KeyError:
-            collectord.logger.error("User %s not found.\n" % options.user)
+            sys.stderr.write("User %s not found.\n" % options.user)
             sys.exit(1)
     if options.group:
         from grp import getgrnam
         try:
-            collectord.gid = getgrnam(options.group)[2]
+            collectord.gid = getgrnam(options.group).gr_gid
         except KeyError:
-            collectord.logger.error("Group %s not found.\n" % options.group)
+            sys.stderr.write("Group %s not found.\n" % options.group)
             sys.exit(1)
 
     if options.perfdata_dir:
         if not os.access(options.perfdata_dir, os.W_OK):
-            collectord.logger.error("Perfdata directory is not writable.\n"
+            sys.stderr.write("Perfdata directory is not writable.\n"
                 + "Please make sure the perfdata directory is writable so "
                 + "the inGraph daemon can delete/move perfdata files.\n")
             sys.exit(1)
 
     getattr(collectord, args[0])()
     return 0
-
 
 if __name__ == '__main__':
     sys.exit(main())

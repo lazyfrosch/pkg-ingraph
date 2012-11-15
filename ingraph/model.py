@@ -738,9 +738,9 @@ ON DUPLICATE KEY UPDATE avg = count * (avg / (count + 1)) + VALUES(avg) / (count
                 conn.execute(datapoint.insert(), inserts)
             
             for update in updates:
-                cond = and_(datapoint.c.plot_id==query['plot_id'],
-                            datapoint.c.timeframe_id==query['timeframe_id'],
-                            datapoint.c.timestamp==query['timestamp'])
+                cond = and_(datapoint.c.plot_id==update['plot_id'],
+                            datapoint.c.timeframe_id==update['timeframe_id'],
+                            datapoint.c.timestamp==update['timestamp'])
                 conn.execute(datapoint.update().where(cond).values(update))
     
     executeUpdateQueries = staticmethod(executeUpdateQueries)
@@ -851,9 +851,14 @@ class TimeFrame(ModelBase):
         self.retention_period = retention_period
         self.active = active
 
-    def getAll(conn):
-        if TimeFrame.cache_tfs == None:
-            sel = timeframe.select().where(timeframe.c.active==True).order_by(timeframe.c.interval.asc())
+    def getAll(conn, include_inactive=False):
+        if TimeFrame.cache_tfs == None or include_inactive:
+            sel = timeframe.select()
+
+            if not include_inactive:
+                sel = sel.where(timeframe.c.active==True)
+
+            sel = sel.order_by(timeframe.c.interval.asc())
             
             objs = []
             
@@ -868,6 +873,9 @@ class TimeFrame(ModelBase):
                 
                 objs.append(obj)
                 
+            if include_inactive:
+                return objs
+
             TimeFrame.cache_tfs = objs
             
         return TimeFrame.cache_tfs
@@ -883,11 +891,8 @@ class TimeFrame(ModelBase):
             res = conn.execute(sel)
             row = res.fetchone()
             
-            obj = TimeFrame()
+            obj = TimeFrame(row[timeframe.c.interval], row[timeframe.c.retention_period], row[timeframe.c.active])
             obj.id = row[timeframe.c.id]
-            obj.interval = row[timeframe.c.interval]
-            obj.retention_period = row[timeframe.c.retention_period]
-            obj.active = row[timeframe.c.active]
             obj.activate()
             
         return obj
@@ -1005,6 +1010,9 @@ class DataPoint(object):
         start_timestamp -= 1.5 * granularity
         end_timestamp += 1.5 * granularity
 
+        if data_tf.retention_period != None:
+            start_timestamp = max(start_timestamp, data_tf.retention_period - 2 * granularity)
+
         assert granularity > 0
         
         # properly align interval with the timeframe
@@ -1114,13 +1122,17 @@ class DataPoint(object):
     getValuesByInterval = staticmethod(getValuesByInterval)
 
     def cleanupOldData(conn):
-        tfs = TimeFrame.getAll(conn)
+        tfs = TimeFrame.getAll(conn, True)
 
         for tf in tfs:
             if tf.retention_period == None:
                 continue
         
-            delsql = datapoint.delete(and_(datapoint.c.timeframe_id==tf.id, datapoint.c.timestamp < time() - tf.retention_period))
+            # DELETE .... LIMIT is a MySQL extention
+            if conn.dialect.name == 'mysql':
+                delsql = "DELETE FROM datapoint WHERE timeframe_id=%d AND timestamp < %d LIMIT 25000" % (tf.id, time() - tf.retention_period)
+            else:
+                delsql = datapoint.delete(and_(datapoint.c.timeframe_id==tf.id, datapoint.c.timestamp < time() - tf.retention_period))
             
             conn.execute(delsql)
     
@@ -1159,7 +1171,7 @@ class Comment(ModelBase):
             hostservice = HostService.getByID(conn, row[comment.c.hostservice_id])
 
             obj = Comment(hostservice, row[comment.c.timestamp], row[comment.c.author], row[comment.c.text])
-            obj.id = row[host.c.id]
+            obj.id = row[comment.c.id]
             obj.comment_timestamp = row[comment.c.comment_timestamp]
             obj.activate()
         
@@ -1182,7 +1194,7 @@ class Comment(ModelBase):
                 hostservice = HostService.getByID(conn, row[comment.c.hostservice_id])
     
                 obj = Comment(hostservice, row[comment.c.timestamp], row[comment.c.author], row[comment.c.text])
-                obj.id = row[host.c.id]
+                obj.id = row[comment.c.id]
                 obj.comment_timestamp = row[comment.c.comment_timestamp]
                 obj.activate()
             
@@ -1229,6 +1241,8 @@ pluginstatus = Table('pluginstatus', metadata,
     mysql_engine='InnoDB'
 )
 
+Index('idx_ps_1', pluginstatus.c.timestamp)
+
 class PluginStatus(ModelBase):
     def __init__(self, hostservice, timestamp, status):
         self.id = None
@@ -1249,7 +1263,7 @@ class PluginStatus(ModelBase):
             hostservice = HostService.getByID(conn, row[pluginstatus.c.hostservice_id])
 
             obj = PluginStatus(hostservice, row[pluginstatus.c.timestamp], row[pluginstatus.c.status])
-            obj.id = row[host.c.id]
+            obj.id = row[pluginstatus.c.id]
             obj.activate()
         
         return obj
@@ -1271,7 +1285,7 @@ class PluginStatus(ModelBase):
                 hostservice = HostService.getByID(conn, row[pluginstatus.c.hostservice_id])
     
                 obj = PluginStatus(hostservice, row[pluginstatus.c.timestamp], row[pluginstatus.c.status])
-                obj.id = row[host.c.id]
+                obj.id = row[pluginstatus.c.id]
                 obj.activate()
             
             objs.append(obj)
@@ -1306,7 +1320,7 @@ class PluginStatus(ModelBase):
     def cleanupOldData(conn):
         retention_period = None
 
-        tfs = TimeFrame.getAll(conn)
+        tfs = TimeFrame.getAll(conn, True)
 
         for tf in tfs:
             if tf.retention_period == None:
@@ -1316,7 +1330,7 @@ class PluginStatus(ModelBase):
                 retention_period = tf.retention_period
 
         if retention_period != None:
-            delsql = datapoint.delete(pluginstatus.c.timestamp < time() - retention_period)
+            delsql = pluginstatus.delete(pluginstatus.c.timestamp < time() - retention_period)
             
             conn.execute(delsql)
     

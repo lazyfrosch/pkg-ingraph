@@ -14,16 +14,28 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import sys
+import logging
 
-if sys.version_info[:2] < (2, 4):
-    sys.exit('inGraph requires Python version 2.4 or later')
-elif sys.version_info[:2] >= (3,):
-    sys.exit('inGraph is not yet compatible with Python 3')
+class FileLikeLogger(object):
+    """A file-like python.logging.Logger interface."""
 
-__name__ = 'ingraph'
-__version__ = '1.0.1'
-__author__ = 'NETWAYS GmbH'
-__contact__ = 'info@netways.de'
-__url__ = 'https://www.netways.org'
-__description__ = 'Data collection and graphing utility for monitoring systems'
+    def __init__(self, logger, loglvl):
+        self._logger = logger
+        self._loglvl = loglvl
+
+    def write(self, msg):
+        msg = msg.rstrip()
+        if msg:
+            # Do not log if empty
+            self._logger.log(self._loglvl, msg)
+
+    def flush(self):
+        for handler in self._logger.handlers:
+            handler.flush()
+
+    def close(self):
+        for handler in self._logger.handlers:
+            handler.close()
+            
+    def __del__(self):
+        self.close()

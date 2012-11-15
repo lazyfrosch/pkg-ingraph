@@ -102,7 +102,14 @@
                     id: 'close',
                     qtip: _('Remove this panel'),
                     handler: function (e, toolEl, flotPanel) {
-                        flotPanel.destroy();
+                        if (flotPanel.ownerCt.items.length === 1) {
+                            // Do not remove last panel
+                            AppKit.notifyMessage(
+                                _('Sorry'),
+                                _('Could not remove the last panel!'));
+                        } else {
+                            flotPanel.destroy();
+                        }
                     }
                 }
             ]
@@ -264,17 +271,15 @@
 
                 this.panels.each(function (panel) {
                     var query = Ext.encode(
-                        Ext.ux.ingraph.Util.buildQuery(
-                            panel.get('series') || template.content.series));
+                            Ext.ux.ingraph.Util.buildQuery(
+                                panel.get('series') || template.content.series)),
+                        titleTemplate = new Ext.XTemplate(panel.get('title'));
 
                     var cfg = this.buildPanelCfg(
-                        String.format(
-                            panel.get('title'),
-                            {
-                                host: this.host,
-                                service: this.service
-                            }
-                        ),
+                        titleTemplate.apply({
+                            host: this.host,
+                            service: this.service
+                        }),
                         template.content,
                         query,
                         panel.get('overviewConfig'),
@@ -298,7 +303,8 @@
                 Ext.ux.ingraph.Urls.provider.template,
                 {
                     host: this.host,
-                    service: this.service
+                    service: this.service,
+                    parentService: this.parentService
                 },
                 callback
             );
@@ -461,8 +467,11 @@
                 var panelConfig = {};
 
                 panelConfig.series = panel.template.toJson(['host', 'service',
-                                                            're', 'plot',
+                                                            'parentService', 'plot',
                                                             'type', 'plot_id']);
+                Ext.each(panelConfig.series, function (series) {
+                    series.re = '/^' + series.plot + '$/';
+                });
                 panelConfig.title = panel.initialConfig.title;
                 panelConfig.flot = panel.template.getStyle();
                 panelConfig.tbarConfig = panel.tbarConfig;
@@ -879,7 +888,7 @@
                 getState: function () {
                     var templateData = {};
                     templateData[this.template.root] = this.template.toJson(
-                        ['host', 'service', 're', 'plot', 'type', 'plot_id']);
+                        ['host', 'service', 'parentService', 're', 'plot', 'type', 'plot_id']);
                     templateData.flot = this.template.getStyle();
 
                     return {
