@@ -41,6 +41,9 @@ generate_xmlrpc() {
     # create tempfile
     local tempfile=$(tempfile -m 600 -p "$(basename $file)")
 
+    # get Icinga Web version
+    local icingaweb_version=$(dpkg-query --showformat "\${Version}" --show icinga-web)
+
     # escape quotes
     e_password="$(uriescape  "$password")"
 
@@ -57,10 +60,29 @@ see icinga-web.xml.sample
         <ae:parameter name="port">5000</ae:parameter>
         <ae:parameter name="user">ingraph</ae:parameter>
         <ae:parameter name="pass">'"$e_password"'</ae:parameter>
-    </setting>
+    </setting>' > $tempfile
 
-</settings>
-'   >$tempfile
+    # compare against icinga-web version
+    tooold=0
+    dpkg --compare-versions "$icingaweb_version" "<" "1.8" && tooold=1
+    if [ "$tooold" -eq 1 ]; then
+        # inserting other template reference
+        # due to icinga-web older than 1.8
+        echo "inserting template reference for icinga-web < 1.8..."
+        echo '
+    <!--
+        template settings for icinga-web < 1.8
+        if you updated icinga-web and want the new look
+        run:   dpkg-reconfigure icinga-web-ingraph
+    -->
+    <setting name="agavi.include.templateExtensions">
+        <ae:parameter>%core.module_dir%/inGraph/config/templateExtensions/inGraphServiceExtension-legacy.xml</ae:parameter>
+        <ae:parameter>%core.module_dir%/inGraph/config/templateExtensions/inGraphHostExtension-legacy.xml</ae:parameter>
+    </setting>' >> $tempfile
+    fi
+
+    echo '
+</settings>' >> $tempfile
 
     # replace the file with ucf
     ucf --debconf-ok $tempfile $file
@@ -93,7 +115,9 @@ case "$1" in
     fi
 
     # config permissions
-    setperm root www-data 0640 /etc/ingraph/icinga-web.xml
+    if [ -f /etc/ingraph/icinga-web.xml ]; then
+        setperm root www-data 0640 /etc/ingraph/icinga-web.xml
+    fi
     
     ;;
 
