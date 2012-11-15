@@ -17,7 +17,7 @@ Depends: ${python:Depends},
          python-mysqldb,
          adduser,
          ucf,
-         pwgen, ${misc:Depends}
+         ${misc:Depends}
 Recommends: icinga-web-ingraph (= ${source:Version})
 Suggests: mysql-client
 Description: Icinga/Nagios graphing addon for performance data
