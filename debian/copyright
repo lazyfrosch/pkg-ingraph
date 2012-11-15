@@ -5,7 +5,188 @@ Source: https://www.netways.org/projects/ingraph/files
 Files: *
 Copyright: 2011-2012 Eric Lippmann <eric.lippmann@netways.de>
            2011-2012 Gunnar Beutner <gunnar.beutner@netways.de>
+                2012 Thomas Gelf <thomas.gelf@netways.de>
            2011-2012 NETWAYS GmbH <support@netways.de>
+License: GPL-2+
+
+Files: debian/*
+Copyright: 2012 Markus Frosch <markus@lazyfrosch.de>
+           2012 NETWAYS GmbH <support@netways.de>
+License: GPL-2+
+
+Files: icinga-web/inGraph/lib/js/flot/*
+Copyright: 2007 IOLA
+           2007 Ole Laursen <olau@iola.dk>
+License: MIT
+
+Files: icinga-web/inGraph/lib/js/flot/jquery.flot.axislabels.js
+Copyright: 2010 Xuan Luo
+           2010 Mark Cote
+License: GPL-3
+
+Files: icinga-web/inGraph/lib/js/flot/jquery.flot.highlight.js
+Copyright: 2012 NETWAYS GmbH
+License: GPL-3
+
+Files: icinga-web/inGraph/lib/js/flot/jquery.flot.sort.js
+Copyright: 2012 NETWAYS GmbH
+License: GPL-3
+ 
+Files: icinga-web/inGraph/lib/js/jquery/*
+Copyright: 2005-2011 John Resig, Brandon Aaron & Jörn Zaefferer
+License: GPL-2+ or MIT
+
+Files: icinga-web/inGraph/lib/nodejs/jquery-*.min.js
+Copyright: 2005-2011 John Resig, Brandon Aaron & Jörn Zaefferer
+License: GPL-2+ or MIT
+
+Files: icinga-web/inGraph/lib/nodejs/jquery.flot.node-canvas.js
+Copyright: 2007 IOLA
+           2007 Ole Laursen <olau@iola.dk>
+License: MIT
+
+Files: icinga-web/inGraph/lib/nodejs/jquery.flot.text.js
+Copyright: 2010 Andre Lessa
+           2007 Jim Studt
+License: public-domain
+ The original code for the CanvasTextFunctions object was
+ released to the public domain by Jim Studt, 2007.
+ .
+ source: http://jim.studt.net/canvastext/
+ .
+ It's said that he may also keep some sort of up to date
+ copy at http://www.federated.com/~jim/canvastext/
+ Last I checked the federated address was not valid though.
+ (from https://github.com/lessaworld/flotCanvasText)
+
+Files: icinga-web/inGraph/lib/js/excanvas/*
+Copyright: 2006 Google Inc.
+License: Apache
+
+Files: icinga-web/inGraph/lib/php/vendor/FPDF/*
+Copyright: 2001-2008 Olivier Plathey <olivier@fpdf.org>
+License: MIT
+
+Files: ingraph-web/libs/agavi/*
+Copyright: Copyright Sean Kerr <skerr@mojavi.org>
+           Copyright Agavi Project Team <info@agavi.org>
+License: LGPL-2.1+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+ .
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+ .
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, A 02110-1301, USA.
+ .
+ On Debian systems, the full text of the GNU Lesser General Public
+ License version 2.1 can be found in the file
+ `/usr/share/common-licenses/LGPL-2.1'.
+
+Files: ingraph-web/ingraph/libs/agavi/src/config/schematron/*
+Copyright: Copyright (c) 2000-2010 Rick Jelliffe and Academia Sinica Computing Center, Taiwan
+License: BSD
+ This software is provided 'as-is', without any express or implied warranty.
+ In no event will the authors be held liable for any damages arising from
+ the use of this software.
+ .
+ Permission is granted to anyone to use this software for any purpose,
+ including commercial applications, and to alter it and redistribute it freely,
+ subject to the following restrictions:
+ .
+ 1. The origin of this software must not be misrepresented; you must not claim
+ that you wrote the original software. If you use this software in a product,
+ an acknowledgment in the product documentation would be appreciated but is
+ not required.
+ .
+ 2. Altered source versions must be plainly marked as such, and must not be
+ misrepresented as being the original software.
+ .
+ 3. This notice may not be removed or altered from any source distribution.
+
+Files: ingraph-web/ingraph/libs/agavi/src/date/*
+Copyright: Copyright 1995-2006, International Business Machines Corporation and others
+           Copyright, The Agavi Project
+License: BSD
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ software and associated documentation files (the "Software"), to deal in the Software without
+ restriction, including without limitation the rights to use, copy, modify, merge, publish,
+ distribute, and/or sell copies of the Software, and to permit persons to whom the Software
+ is furnished to do so, provided that the above copyright notice(s) and this permission notice
+ appear in all copies of the Software and that both the above copyright notice(s) and this
+ permission notice appear in supporting documentation.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT OF THIRD PARTY RIGHTS. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS
+ INCLUDED IN THIS NOTICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT OR CONSEQUENTIAL
+ DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH
+ THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ .
+ Except as contained in this notice, the name of a copyright holder shall not be used in
+ advertising or otherwise to promote the sale, use or other dealings in this Software without
+ prior written authorization of the copyright holder.
+ .
+ All trademarks and registered trademarks mentioned herein are the property of their respective owners.
+
+Files: ingraph-web/ingraph/libs/agavi/src/translation/data/*
+Copyright: Copyright 1991-2006, Unicode, Inc.
+License: BSD
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ software and associated documentation files (the "Software"), to deal in the Software without
+ restriction, including without limitation the rights to use, copy, modify, merge, publish,
+ distribute, and/or sell copies of the Software, and to permit persons to whom the Software
+ is furnished to do so, provided that the above copyright notice(s) and this permission notice
+ appear in all copies of the Software and that both the above copyright notice(s) and this
+ permission notice appear in supporting documentation.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT OF THIRD PARTY RIGHTS. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS
+ INCLUDED IN THIS NOTICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT OR CONSEQUENTIAL
+ DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH
+ THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ .
+ Except as contained in this notice, the name of a copyright holder shall not be used in
+ advertising or otherwise to promote the sale, use or other dealings in this Software without
+ prior written authorization of the copyright holder.
+ .
+ Unicode and the Unicode logo are trademarks of Unicode, Inc., and may be registered in some
+ jurisdictions. All other trademarks and registered trademarks mentioned herein are the property
+ of their respective owners.
+
+Files: ingraph-web/ingraph/pub/js/ext/*
+Copyright: 2006-2011, Sencha Inc.
+License: GPL-3
+ Ext JS is licensed under the terms of the Open Source GPL 3.0 license. 
+ .
+ http://www.gnu.org/licenses/gpl.html
+ .
+ There are several FLOSS exceptions available for use with this release for
+ open source applications that are distributed under a license other than the GPL.
+ .
+ * Open Source License Exception for Applications
+   http://www.sencha.com/products/floss-exception.php
+ .
+ * Open Source License Exception for Development
+  http://www.sencha.com/products/ux-exception.php
+
+License: MIT
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software to use, copy, modify, distribute, sublicense, and/or sell
+ copies of the software, and to permit persons to whom the software is furnished
+ to do so.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
+
 License: GPL-2+
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -27,24 +208,37 @@ License: GPL-2+
  License version 2 can be found in the file
  "/usr/share/common-licenses/GPL-2".
 
-Files: debian/*
-Copyright: 2012 Markus Frosch <markus@lazyfrosch.de>
-           2012 NETWAYS GmbH <support@netways.de>
-License: GPL-2+
- This package is free software; you can redistribute it and/or modify
+License: Apache
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ .
+ http://www.apache.org/licenses/LICENSE-2.0
+ .
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+License: GPL-3
+ This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
+ the Free Software Foundation; either version 3 of the License, or
  (at your option) any later version.
  .
- This package is distributed in the hope that it will be useful,
+ This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
  .
  You should have received a copy of the GNU General Public License
- along with this program. If not, see <http://www.gnu.org/licenses/>
+ along with this program; if not, write to the
  .
- On Debian systems, the complete text of the GNU General
- Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
+ Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ A 02110-1301, USA.
+ .
+ On Debian systems, the full text of the GNU General Public
+ License version 3 can be found in the file
+ `/usr/share/common-licenses/GPL-3'.
 
-# TODO there is still more information missing :) -Markus Frosch
