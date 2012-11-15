@@ -21,6 +21,7 @@ import atexit
 import errno
 import fcntl
 import logging
+import logging.handlers
 
 try:
     os.SEEK_SET
@@ -31,8 +32,18 @@ __all__ = ['UnixDaemon']
 
 
 class UnixDaemon(object):
-    def __init__(self, pidfile, umask=0, chdir='/', uid=os.getuid(),
-                 gid=os.getgid(), detach=True):
+    def __init__(
+        self,
+        pidfile,
+        umask=0,
+        chdir='/',
+        uid=os.getuid(),
+        gid=os.getgid(),
+        detach=True,
+        stdout_logger=None,
+        stderr_logger=None,
+        log=None):
+        """Create a new unix daemon instance."""
         self.pidfile = pidfile
         self.pidfp = None
         self.pidlocked = False
@@ -42,8 +53,11 @@ class UnixDaemon(object):
         self.gid = gid
         self.umask = umask
         self.logger = logging.getLogger('ingraph')
-        self.addLoggingHandler(logging.StreamHandler(sys.stderr))
+        self.addLoggingHandler(logging.StreamHandler(sys.stdout))
         self.logger.setLevel(logging.DEBUG)
+        self.stdout_logger = stdout_logger
+        self.stderr_logger = stderr_logger
+        self.log = log
         super(UnixDaemon, self).__init__()
 
     def addLoggingHandler(self, handler):
@@ -82,7 +96,7 @@ class UnixDaemon(object):
 
     def _delpid(self):
         if not self.pidlocked:
-            raise Exception('Trying to unlink PID file while not holding lock.')
+            raise Exception("Trying to unlink PID file while not holding lock.")
 
         try:
             os.unlink(self.pidfile)
@@ -144,7 +158,7 @@ class UnixDaemon(object):
 
     def _writepid(self):
         if not self.pidlocked:
-            raise Exception('Trying to write PID file while not holding lock.')
+            raise Exception("Trying to write PID file while not holding lock.")
 
         self.pidfp.seek(0, os.SEEK_SET)
         self.pidfp.truncate()
@@ -169,6 +183,12 @@ class UnixDaemon(object):
         os.chdir(self.chdir)
         os.setgid(self.gid)
         os.setuid(self.uid)
+
+        if self.log and self.log != '-':
+            self.addLoggingHandler(
+                logging.handlers.RotatingFileHandler(
+                     self.log, maxBytes=2**11*5, backupCount=4)) # 4 files,
+                                                                 # 5MB each
         
         self.before_daemonize()
         if self.detach:
@@ -176,11 +196,15 @@ class UnixDaemon(object):
             self._redirect_stream(sys.stdin, os.devnull)
             self._redirect_stream(sys.stdout, os.devnull)
             self._redirect_stream(sys.stderr, os.devnull)
+            if self.stdout_logger:
+                sys.stdout = self.stdout_logger
+            if self.stderr_logger:
+                sys.stderr = self.stderr_logger
         
         signal.signal(signal.SIGTERM, self._SIGTERM)
         atexit.register(self._atexit)
  
-        self._writepid()       
+        self._writepid()
         
         self.run()
 

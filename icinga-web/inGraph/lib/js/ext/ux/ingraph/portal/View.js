@@ -35,6 +35,8 @@
     Ext.ux.ingraph.portal.View = Ext.extend(Ext.ux.ingraph.View, {
         baseCls: 'x-panel',
 
+        bodyBorder: false,
+
         layout: 'anchor',
         layoutConfig: {
             defaultAnchor: '100% 100%'
@@ -59,6 +61,20 @@
                     id: 'close',
                     scope: this,
                     handler: this.replaceWithMenuItem
+                },
+                {
+                    id: 'refresh',
+                    scope: this,
+                    handler: function () {
+                        this.removeAll(true);
+                        if (this.view) {
+                            this.view = this.view.name;
+                            this.fromView();
+                        } else {
+                            this.template = this.template.name;
+                            this.fromHostService();
+                        }
+                    }
                 }
             ];
         },
@@ -74,6 +90,7 @@
                     var cfg = {
                         row: column.row,
                         flex: column.flex,
+                        rowHeight: column.rowHeight,
                         xtype: 'xigportalmenuitem'
                     };
 
@@ -84,6 +101,16 @@
                     return false;
                 }
             }, this);
+        },
+
+        // private
+        onBeforeAdd: function (item) {
+            Ext.ux.ingraph.portal.View.superclass.onBeforeAdd.call(this, item);
+            if (item.title === this.title) {
+                item.elements = item.elements.replace(',header', '');
+                item.showEmpty = true;
+                item.header = false;
+            }
         }
     });
     Ext.reg('xigportalview', Ext.ux.ingraph.portal.View);

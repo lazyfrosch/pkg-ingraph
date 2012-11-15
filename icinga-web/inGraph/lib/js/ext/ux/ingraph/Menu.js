@@ -57,7 +57,7 @@
          * <b>Note</b>: quick tips must be initialized for the quicktip to show.
          */
         dateText: _('Either select date via the popup date picker or input an ' +
-                    'English textual date or time, i.e.<br />' +
+                    'English textual date or time, e.g.<br />' +
                     '<ul style="list-style-type:circle;' +
                         'list-style-position:inside;">' +
                         '<li>now</li>' +
@@ -133,8 +133,8 @@
                                     displayField: 'host',
                                     valueField: 'host',
                                     plugins: [
-                                        new Ext.ux.ComboController('serviceCombo',
-                                                                   'dispGraphBtn')
+                                        new Ext.ux.ComboController(
+                                            'serviceCombo', 'dispGraphBtn')
                                     ]
                                 }
                             ]
@@ -147,13 +147,17 @@
                                     ref: '../../serviceCombo',
                                     emptyText: _('Choose service'),
                                     store: {
-                                        xtype: 'arraystore',
+                                        xtype: 'jsonstore',
                                         root: 'results',
-                                        fields: ['service'],
-                                        idProperty: 'service',
+                                        fields: [
+                                            'name',
+                                            'service',
+                                            'parentService'
+                                        ],
+                                        idProperty: 'name',
                                         url: Ext.ux.ingraph.Urls.provider.services
                                     },
-                                    displayField: 'service',
+                                    displayField: 'name',
                                     valueField: 'service',
                                     plugins: [
                                         new Ext.ux.ComboDependency({
@@ -264,7 +268,7 @@
 
         // private
         displayGraphHandler: function () {
-            var values = this.getForm().getValues();
+            var values = this.getForm().getFieldValues();
 
             // View value not needed for host / service graphs
             delete values.view;
@@ -276,7 +280,9 @@
             values.end = this.endDateField.strValue ||
                          this.endDateField.getValue() ?
                          this.endDateField.getValue().getTime() / 1000 : null;
-
+            values.parentService = this.serviceCombo.getSelectedRecord() ?
+                this.serviceCombo.getSelectedRecord().get('parentService') :
+                null;
             this.fireEvent('plot', this, values);
         },
 

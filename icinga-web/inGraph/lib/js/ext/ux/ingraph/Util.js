@@ -63,6 +63,8 @@
             formatTime: function (v) {
                 var sign = v >= 0 ? 1 : -1;
                 v = Math.abs(v);
+                
+                /* If value is less than one, use a smaller unit */
                 if (v < 1) {
                     var pow = calcPow(v, timeSpec.base, timeSpec.units.length,
                                       true);
@@ -70,8 +72,33 @@
                         value: v * Math.pow(timeSpec.base, pow) * sign,
                         unit: timeSpec.units[pow]
                     };
-
                 }
+                
+                /* After 48h switch to days */
+                if (v > 48 * 60 * 60) {
+                    return {
+                        value: v / 60 / 60 / 24 * sign,
+                        unit: 'd'
+                    };
+                }
+                
+                /* After 120minutes switch to hours */
+                if (v > 120 * 60) {
+                    return {
+                        value: v / 60 / 60 * sign,
+                        unit: 'h'
+                    };
+                }
+                
+                /* After 10minutes switch to minutes */
+                if (v > 60 * 10) {
+                    return {
+                        value: v / 60 * sign,
+                        unit: 'm'
+                    };
+                }
+                
+                /* Default */
                 return {
                     value: v * sign,
                     unit: 's'
@@ -120,29 +147,24 @@
             },
 
             buildQuery: function (series) {
-                var query = {};
+                var query = [];
                 Ext.each(series, function (item) {
-                    var qpart = query;
-                    Ext.each([item.host, item.service],
-                        function (v) {
-                         if (!Ext.isObject(qpart[v])) {
-                             qpart[v] = {};
-                         }
-                         qpart = qpart[v];
-                    }, this);
-                    if (!Ext.isArray(qpart[item.plot])) {
-                        qpart[item.plot] = [];
-                    }
-                    qpart = qpart[item.plot];
+                    var qpart = {
+                        host: item.host,
+                        service: item.service,
+                        plot: item.plot,
+                        parent_service: item.parentService
+                    };
                     if (!Ext.isArray(item.type)) {
                         item.type = [item.type];
+                    } else {
+                        item.type = Ext.unique(item.type)
                     }
                     Ext.each(item.type, function (type) {
-                        if (qpart.indexOf(type) === -1) {
-                            qpart.push(type);
-                        }
+                        qpart.type = type;
+                        query.push(qpart);
                     });
-                }, this);
+                });
                 return query;
             },
 
@@ -168,7 +190,9 @@
             },
 
             yTickFormatter: function (v, axis) {
-                if (axis.ticks.length === 0) {
+                if (this.showLabel !== false
+                    && axis.ticks.length === 0
+                ) {
                     this.rawTicks = axis.tickGenerator(axis);
                 }
                 if (this.units === undefined) {
@@ -179,7 +203,10 @@
                         c: Ext.ux.ingraph.Util.formatCounter
                     };
                 }
-                if (v === this.rawTicks.last() && this.label) {
+                if (this.showLabel !== false
+                    && this.label
+                    && v === this.rawTicks.last()
+                ) {
                     if (!Ext.isArray(this.label)) {
                         this.label = [this.label];
                     }

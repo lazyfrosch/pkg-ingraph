@@ -13,12 +13,8 @@ debian/icinga-web-ingraph/
 .*.swo
 
 #-- the following ignores are from the original ingraph tarball --
-attic
-build
-dist
-tmp
+.*
 *.pyc
-.buildpath
-.project
-*.egg-info
-.pydevproject
+MANIFEST
+contrib/init.d/ingraph-collector
+setup.py

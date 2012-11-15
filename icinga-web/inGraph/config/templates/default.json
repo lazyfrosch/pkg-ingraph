@@ -8,6 +8,9 @@
                 "steps": true,
                 "lineWidth": 2
             }
+        },
+        "legend": {
+            "position": "nw"
         }
     },
 
@@ -21,11 +24,11 @@
                 "fillColor": {
                     "colors": [
                         {
-                            "opacity": 0.4
+                            "opacity": 0.7
                         },
                         {
                             "opacity": 0.9,
-                            "brightness": 0.8
+                            "brightness": 0.9
                         }
                     ]
                 }
@@ -35,29 +38,26 @@
 
     "panels": [
         {
-            "title": "Four Hours (With Quickview) Graph For {host} - {service}",
+            "title": "Four Hours (With Quickview) Graph For {host}<tpl if=\"service\"> - {service}</tpl>",
             "overviewConfig": {
                 "enable": true
             },
-            "start": "-4 hours",
-            "interval": 60
+            "start": "-4 hours"
         },
         {
-            "title": "One Day Graph For {host} - {service}",
-            "start": "-1 day",
-            "interval": 300
+            "title": "One Day Graph For {host}<tpl if=\"service\"> - {service}</tpl>",
+            "start": "-1 day"
         },
         {
-            "title": "One Week Graph For {host} - {service}",
-            "start": "-1 week",
-            "interval": 600
+            "title": "One Week Graph For {host}<tpl if=\"service\"> - {service}</tpl>",
+            "start": "-1 week"
         },
         {
-            "title": "One Month Graph For {host} - {service}",
+            "title": "One Month Graph For {host}<tpl if=\"service\"> - {service}</tpl>",
             "start": "-1 month"
         },
         {
-            "title": "One Year Graph For {host} - {service}",
+            "title": "One Year Graph For {host}<tpl if=\"service\"> - {service}</tpl>",
             "start": "-1 year"
         }
     ]

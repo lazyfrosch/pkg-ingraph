@@ -2,11 +2,13 @@
 
 set -o nounset
 
+VERSION=1.0.1
+
 SCRIPT=$(readlink -f "$0")
 DIR=$(dirname "$SCRIPT")
 COMMON_SRC=$(readlink -f "$DIR/../icinga-web")
 
-PREFIX=${PREFIX-/usr/local/ingraph}
+PREFIX=${PREFIX-/usr/local/ingraph-web}
 WEB_USER=${WEB_USER-www-data}
 WEB_GROUP=${WEB_GROUP-www-data}
 WEB_PATH=${WEB_PATH-/ingraph}
@@ -14,27 +16,36 @@ XMLRPC_HOST=${XMLRPC_HOST-127.0.0.1}
 XMLRPC_PORT=${XMLRPC_PORT-5000}
 XMLRPC_USER=${XMLRPC_USER-ingraph}
 XMLRPC_PASSWORD=${XMLRPC_PASSWORD-changeme}
+NULL_TOLERANCE=${NULL_TOLERANCE-2}
 
 FIND=${FIND-find}
 INSTALL=${INSTALL-install}
 SED=${SED-sed}
 LN=${LN-ln}
+GETENT=${GETENT-getent}
 
 usage () {
     echo
-    echo "Install the inGraph web-interface"
+    echo "Install the inGraph web-interface version $VERSION"
     echo
     echo "Usage: $(basename $0) [OPTION]..."
     echo
+    echo "Defaults for the options are specified in brackets."
+    echo
     echo "Required options are:"
-    echo "--install                 install the inGraph web-interface"
+    echo "--install                 install the inGraph web interface"
     echo "or"
     echo "--install-dev             install dev environment"
     echo
-    echo "Options (defaults are specified in brackets):"
-    echo "--help, -h                display this help and exit"
+    echo "Help:"
+    echo "-h, --help                display this help and exit"
+    echo "-V, --version             display version information and exit"
+    echo
+    echo "Installation directories:"
     echo "--prefix=PREFIX           installation prefix"
     echo "                          [$PREFIX]"
+    echo
+    echo "Configuration:"
     echo "--with-web-user           web user"
     echo "                          [$WEB_USER]"
     echo "--with-web-group          web group"
@@ -49,7 +60,14 @@ usage () {
     echo "                          [$XMLRPC_USER]"
     echo "--with-xmlrpc-password    xml-rpc password"
     echo "                          [$XMLRPC_PASSWORD]"
+    echo "--with-null-tolerance     null tolerance value"
+    echo "                          [$NULL_TOLERANCE]"
     echo
+    exit 1
+}
+
+version () {
+    echo $VERSION
     exit 1
 }
 
@@ -59,7 +77,8 @@ install_files () (
     DEST=$2
     INSTALL_OPTS=${3-}
     
-    FILES=$(for F in $($FIND $D -maxdepth 1 -type f ! -name \*.in); do echo $F; done)
+    # Exclude .in suffixed files and inGraph.xml
+    FILES=$(for F in $($FIND $D -maxdepth 1 -type f ! -name \*.in ! -path \*/config/inGraph.xml); do echo $F; done)
     
     [ -n "$FILES" ] && $INSTALL -m 644 $INSTALL_OPTS -t $DEST $FILES
 )
@@ -165,8 +184,19 @@ do
                 exit 1
             }
             ;;
+        --with-null-tolerance*)
+            NULL_TOLERANCE=${ARG#--with-null-tolerance}
+            NULL_TOLERANCE=${NULL_TOLERANCE#=}
+            [ -z "$NULL_TOLERANCE" ] && {
+                echo "ERROR: expected a numeric value." >&2
+                exit 1
+            }
+            ;;
         --help | -h)
             usage
+            ;;
+        --version | -V)
+            version
             ;;
         *)
             echo "WARN: Unknown option (ignored): $ARG" >&2
@@ -180,6 +210,20 @@ then
 
     usage
 fi
+
+$GETENT passwd $WEB_USER > /dev/null
+[ $? -ne 0 ] && {
+    echo "ERROR: Web user $WEB_USER: no such user" >&2
+    
+    usage
+}
+
+$GETENT group $WEB_GROUP > /dev/null
+[ $? -ne 0 ] && {
+    echo "ERROR: Web group $WEB_GROUP: no such group" >&2
+    
+    usage
+}
 
 PREFIX=${PREFIX%%/} # Remove trailing / from prefix (if existing)
 
@@ -203,6 +247,7 @@ do
     $SED -i -e s,@XMLRPC_PORT@,$XMLRPC_PORT, $F
     $SED -i -e s,@XMLRPC_USER@,$XMLRPC_USER, $F
     $SED -i -e s,@XMLRPC_PASSWORD@,$XMLRPC_PASSWORD, $F
+    $SED -i -e s,@NULL_TOLERANCE@,$NULL_TOLERANCE, $F
 done
 
 # Install files from the ingraph directory
@@ -210,12 +255,17 @@ echo "(2/4) Installing directories and files..."
 
 SRC=$DIR/ingraph
 
-for D in $($FIND $SRC -type d ! -path $SRC/bin ! -path $SRC/app/cache ! -path $SRC/app/log)
+for D in $($FIND $SRC -type d ! -path $SRC/bin)
 do
     $INSTALL -m 755 -d $PREFIX${D##$SRC}
 
     [ $? -eq 0 ] && install_files "$D" "$PREFIX${D##$SRC}"
 done
+
+# If inGraph.xml does not exist install it
+[ ! -r $PREFIX/app/modules/inGraph/config/inGraph.xml ] && {
+    $INSTALL -m 644 -t $PREFIX/app/modules/inGraph/config $SRC/app/modules/inGraph/config/inGraph.xml
+}
 
 # Install bin files
 $INSTALL -m 755 -d $PREFIX/bin
@@ -224,10 +274,7 @@ $INSTALL -m 755 -t $PREFIX/bin $BINFILES
 
 echo "(3/4) Installing cache and log directory..."
 
-for D in $($FIND $SRC -type d -path $SRC/app/cache -o -path $SRC/app/log)
-do
-    $INSTALL -m 755 -o $WEB_USER -g $WEB_GROUP -d $PREFIX${D##$SRC}
-done
+$INSTALL -m 755 -o $WEB_USER -g $WEB_GROUP -d $PREFIX/app/log $PREFIX/app/cache
 
 # Install direcotries and files from icinga-web module
 echo "(4/4) Installing directories and files from common source..."
@@ -238,7 +285,7 @@ install_common_directories "Comments${tab}Provider${tab}Templates${tab}Views" $C
 install_common_directories "Comments${tab}Provider${tab}Templates${tab}Views" $COMMON_SRC/inGraph/validate $PREFIX/app/modules/inGraph/validate
 install_common_directories "Comments${tab}Provider${tab}Templates${tab}Views" $COMMON_SRC/inGraph/views $PREFIX/app/modules/inGraph/views
 install_common_directories "js${tab}styles" $COMMON_SRC/inGraph/lib $PREFIX/pub
-install_common_directories "templates${tab}views" $COMMON_SRC/inGraph/config $PREFIX/app/modules/inGraph/config "-o${tab}$WEB_USER${tab}-g${tab}$WEB_GROUP"
+install_common_directories "templates${tab}views" $COMMON_SRC/inGraph/config $PREFIX/app/modules/inGraph/config "-o${tab}$WEB_USER${tab}-g${tab}$WEB_GROUP${tab}-C${tab}-b"
 install_common_directories "action${tab}model${tab}nodejs${tab}php${tab}view" $COMMON_SRC/inGraph/lib $PREFIX/app/modules/inGraph/lib
 
 # Install config xmls
