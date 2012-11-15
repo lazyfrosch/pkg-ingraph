@@ -1,6 +1,6 @@
 #! /bin/sh -e
 ### BEGIN INIT INFO
-# Provides:           ingraph-collectord ingraphd
+# Provides:           ingraph-collectord ingraphd ingraph
 # Required-Start:     $network $remote_fs $syslog
 # Required-Stop:      $network $remote_fs $syslog
 # Default-Start:      2 3 4 5

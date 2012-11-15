@@ -1,9 +1,2 @@
-# this need to be embedded
-embedded-php-library usr/share/icinga-web/app/modules/inGraph/lib/php/vendor/FPDF/fpdf.php
-
-# yes - strange ... 
-unusual-interpreter usr/share/icinga-web/app/modules/inGraph/lib/nodejs/ingraph-renderer.js #!node
-
-# not a executeable - so ignore
-script-not-executable usr/share/icinga-web/app/modules/inGraph/lib/nodejs/ingraph-renderer.js
-unusual-interpreter usr/share/icinga-web/app/modules/inGraph/lib/nodejs/ingraph-renderer.js
+# nodejs is not a dependecy, but its ok
+unusual-interpreter usr/share/icinga-web/app/modules/inGraph/lib/nodejs/ingraph-renderer.js #!/usr/bin/nodejs
