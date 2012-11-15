@@ -3,8 +3,8 @@
 # installed at /etc/default/ingraph by the maintainer scripts
 
 # Options for ingraphd
-INGRAPHD_OPTS="-o /var/log/ingraphd.log"
+INGRAPHD_OPTS="-o /var/log/ingraph/ingraphd.log"
 
 # Options for ingraph-collectord
-INGRAPHCOLLECTORD_OPTS="-o /var/log/ingraph-collectord.log -P /var/spool/ingraph/perfdata -m REMOVE"
+INGRAPHCOLLECTORD_OPTS="-o /var/log/ingraph/ingraph-collectord.log -P /var/spool/ingraph/perfdata -m REMOVE"
 

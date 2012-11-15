@@ -31,6 +31,7 @@ case "$1" in
     # cleanup files
     rm -f /var/log/ingraphd.log*
     rm -f /var/log/ingraph-collectord.log*
+    rm -rf /var/log/ingraph/
     rm -f /var/run/ingraphd.pid
     rm -f /var/run/ingraph-collectord.pid
     rm -rf /var/spool/ingraph/perfdata

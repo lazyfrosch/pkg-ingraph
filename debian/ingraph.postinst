@@ -153,11 +153,13 @@ case "$1" in
     # spooldir permissions
     setperm ingraph nagios 0770 /var/spool/ingraph/perfdata
 
-    # prepare logfiles
-    [ -f /var/log/ingraphd.log ] || touch /var/log/ingraphd.log
-    [ -f /var/log/ingraph-collectord.log ] || touch /var/log/ingraph-collectord.log
-    setperm ingraph adm 0640 /var/log/ingraphd.log
-    setperm ingraph adm 0640 /var/log/ingraph-collectord.log
+    # prepare logdir
+    [ -d /var/log/ingraph ] || mkdir /var/log/ingraph
+    setperm ingraph adm 0750 /var/log/ingraph
+    
+    # move old logs
+    find /var/log -maxdepth 1 -name "ingraphd.log*" -exec mv {} /var/log/ingraph/ \;
+    find /var/log -maxdepth 1 -name "ingraph-collectord.log*" -exec mv {} /var/log/ingraph/ \;
 
     ;;
 
