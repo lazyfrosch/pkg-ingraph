@@ -9,6 +9,9 @@ ingraph (1.0.1-1) UNRELEASED; urgency=low
   * [59f3861] documentation and example updates
   * [7ce1b33] now using FPDF via a dependency
   * [c3122c0] lintian and general cleanup
+  * [f4e4328] icinga-web.xml now generated without ingraph
+  * [2661e3e] JQuery and Flot now a dependency
+  * [f11171e] updated copyright file to fit DEP5 requirements
 
  -- Markus Frosch <markus@lazyfrosch.de>  Thu, 15 Nov 2012 07:26:55 +0100
 
