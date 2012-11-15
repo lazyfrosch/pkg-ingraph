@@ -4,9 +4,9 @@ Priority: extra
 Maintainer: Markus Frosch <markus@lazyfrosch.de>
 Build-Depends: debhelper (>= 8.0.0), quilt, po-debconf, python-all (>= 2.6.6-3~), python-setuptools
 Standards-Version: 3.9.3
-Homepage: http://www.netways.de/de/produkte/nagios_icinga_addons/ingraph/
-Vcs-Git: git://git.netways.org/debian.ingraph.git
-Vcs-Browser: https://git.netways.org/?p=debian.ingraph.git;a=summary
+Homepage: https://www.netways.org/projects/ingraph
+Vcs-Git: git://git.netways.org/debian/ingraph.git
+Vcs-Browser: https://git.netways.org/debian/ingraph
 
 Package: ingraph
 Architecture: all
@@ -15,8 +15,9 @@ Depends: ${python:Depends},
          python-distribute,
          python-sqlalchemy,
          python-mysqldb,
-         adduser, ucf, pwgen, ${misc:Depends}
-#Recommends: icinga-web-ingraph | ingraph-web
+         adduser,
+         ucf,
+         pwgen, ${misc:Depends}
 Recommends: icinga-web-ingraph (= ${source:Version})
 Suggests: mysql-client
 Description: Icinga/Nagios graphing addon for performance data
@@ -47,5 +48,5 @@ Description: Icinga/Nagios graphing addon for performance data
  which collects performance data in a database and displays the results
  in a web interface.
  .
- This is the web interface for inGraph as an addin in Icinga Web.
+ This is the web interface for inGraph as an addin to Icinga Web.
 
