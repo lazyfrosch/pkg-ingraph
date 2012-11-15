@@ -1,3 +1,2 @@
 debian/icinga-web.xml.sample /etc/ingraph
-debian/inGraph.xml /usr/share/icinga-web/app/modules/inGraph/config
 icinga-web/inGraph /usr/share/icinga-web/app/modules

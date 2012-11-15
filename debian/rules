@@ -18,11 +18,25 @@ override_dh_install:
 	# cleanup some creepy executable bits
 	chmod a-x debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/lib/php/vendor/FPDF/font/*.php
 	chmod a-x debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/lib/nodejs/ingraph-renderer.js
-	# remove the inGraph.xml.in
-	rm -f debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/config/inGraph.xml.in
 	# install config as examples
 	cp debian/tmp/etc/ingraph/ingraph-database.conf debian/ingraph/etc/ingraph/ingraph-database.conf.example
 	cp debian/tmp/etc/ingraph/ingraph-xmlrpc.conf debian/ingraph/etc/ingraph/ingraph-xmlrpc.conf.example
+	#
+	## some icinga-web config stuff
+	#
+	mv debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/config/inGraph.xml.in \
+	   debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/config/inGraph.xml
+	mv debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/config/module.xml.in \
+	   debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/config/module.xml
+	# replace some vars
+	sed -i -e s,@XMLRPC_HOST@,localhost, \
+	       -e s,@XMLRPC_PORT@,5000, \
+	       -e s,@XMLRPC_USER@,ingraph, \
+	       -e s,@XMLRPC_PASSWORD@,changeme, \
+	       -e s,@NULL_TOLERANCE@,2, \
+	       debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/config/inGraph.xml
+	sed -i -e s,@TEMPLATE_SUFFIX@,, \
+	       debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/config/module.xml
 
 # vi: set noexpandtab ts=4 sw=4 :
 

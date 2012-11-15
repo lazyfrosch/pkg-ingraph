@@ -1,11 +1,25 @@
-Description: add include from config file in /etc
+Description: add include for config from /etc/ingraph
 Author: Markus Frosch <markus@lazyfrosch.de>
 Origin: vendor
-Last-Update: 2012-07-12
+Last-Update: 2012-11-15
 ---
 This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
---- a/icinga-web/inGraph/config/module.xml
-+++ b/icinga-web/inGraph/config/module.xml
+--- a/icinga-web/inGraph/config/inGraph.xml.in
++++ b/icinga-web/inGraph/config/inGraph.xml.in
+@@ -2,6 +2,11 @@
+ <settings xmlns="http://agavi.org/agavi/config/parts/module/1.0"
+     xmlns:ae="http://agavi.org/agavi/config/global/envelope/1.0">
+ 
++    <!--
++      Debian warning: parts of this file will overriden by:
++      /etc/ingraph/icinga-web.xml
++    -->
++
+     <setting name="xmlrpc">
+         <ae:parameter name="host">@XMLRPC_HOST@</ae:parameter>
+         <ae:parameter name="port">@XMLRPC_PORT@</ae:parameter>
+--- a/icinga-web/inGraph/config/module.xml.in
++++ b/icinga-web/inGraph/config/module.xml.in
 @@ -43,6 +43,9 @@
  
              <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="inGraph.xml" />
