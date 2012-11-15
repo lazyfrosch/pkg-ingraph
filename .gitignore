@@ -11,6 +11,8 @@ debian/icinga-web-ingraph/
 .pc/
 .*.swp
 .*.swo
+build/
+*.egg-info/
 
 #-- the following ignores are from the original ingraph tarball --
 .*

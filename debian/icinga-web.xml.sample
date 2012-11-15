@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings xmlns="http://agavi.org/agavi/config/parts/module/1.0"
     xmlns:ae="http://agavi.org/agavi/config/global/envelope/1.0">
-<!--
-this is the /etc location of
-/usr/share/icinga-web/app/modules/inGraph/config/inGraph.xml
+    <!--
+    Debian packaing
 
-linked by symlink
+    This is a example for the file /etc/ingraph/icinga-web.xml
 
-please make sure to run /usr/lib/icinga-web/bin/clearcache.sh after editing
+    It is auto generated normally, but if you decide to manually
+    change it here are a few notes!
 
- -Markus Frosch <markus@lazyfrosch.de>
--->
+    The file overrides settings from
+    /usr/share/icinga-web/app/modules/inGraph/config/inGraph.xml
+    and is included via xi:include in
+    /usr/share/icinga-web/app/modules/inGraph/config/module.xml
+
+    1. xmlrpc connection to the ingraphd daemon
+
+    2. templates for icinga-web integration into the status grid
+       (different settings for Icinga Web versions before 1.8)
+
+    Please make sure to run /usr/lib/icinga-web/bin/clearcache.sh after editing
+
+    - Markus Frosch <markus@lazyfrosch.de>
+    -->
 
     <setting name="xmlrpc">
         <ae:parameter name="host">localhost</ae:parameter>
@@ -18,5 +30,17 @@ please make sure to run /usr/lib/icinga-web/bin/clearcache.sh after editing
         <ae:parameter name="user">ingraph</ae:parameter>
         <ae:parameter name="pass">changeme</ae:parameter>
     </setting>
+
+    <!--
+        template settings for icinga-web < 1.8
+        uncomment this when you are using an older icinga-web
+        (done automatically when possible)
+    -->
+    <!--
+    <setting name="agavi.include.templateExtensions">
+        <ae:parameter>%core.module_dir%/inGraph/config/templateExtensions/inGraphServiceExtension-legacy.xml</ae:parameter>
+        <ae:parameter>%core.module_dir%/inGraph/config/templateExtensions/inGraphHostExtension-legacy.xml</ae:parameter>
+    </setting>
+    -->
 
 </settings>

@@ -6,6 +6,7 @@ TODO list:
 * expand copyright file
 * better output handling for the daemons on start (maybe patch upstream)
 * remove fd 3 close form init script (upstream patch)
+* maybe ingraph-web
 
- -- Markus Frosch <markus@lazyfrosch.de>  Wed, 12 Jul 2012 16:40:06 +0200
+ -- Markus Frosch <markus@lazyfrosch.de>  Wed, 15 Nov 2012 07:47:48 +0200
 

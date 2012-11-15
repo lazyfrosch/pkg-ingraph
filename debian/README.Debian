@@ -1,7 +1,47 @@
 ingraph for Debian
 ------------------
 
-[ setting out perfdata in Icinga ]
+[ configuration ]
+
+Most configuration is done automatically.
+
+Here are a few notes in case you want to change some stuff.
+
+icinga-web cronk:
+
+  /etc/ingraph/icinga-web.xml
+   can be overwritten by user
+   included from inside the cronk
+   see notes inside
+
+  clear icinga-web cache after every change:
+   $ sudo /usr/lib/icinga-web/bin/clearcache.sh
+
+  Icon Integration into the status tables of Icinga Web
+  has been changed with version 1.8
+  The package decides which to load depending on the
+  current Icinga Web version installed.
+  After updating Icinga Web you will have to run
+   $ sudo dpkg-reconfigure icinga-web-ingraph
+  to get the new look.
+
+  Also have a look at /etc/ingraph/icinga-web.xml(.sample)
+
+ingraph daemon:
+
+  database
+    must only be created - schema will be created
+    by the daemon itself
+
+  xmlrpc password
+    can be configured via debconf and is filled
+    into each necessary config file
+
+  interesting files
+    /etc/ingraph/*
+    /etc/default/ingraph
+
+[ setting up perfdata in Icinga ]
 
 You have to configure Icinga to export its perfdata to the right spot
 and format.
@@ -41,4 +81,4 @@ the collector daemon, preprocessed and then written to the database via
 the ingrapd daemon.
 
 
- -- Markus Frosch <markus@lazyfrosch.de>  Tue, 12 Jul 2012 16:26:15 +0200
+ -- Markus Frosch <markus@lazyfrosch.de>  Tue, 15 Nov 2012 11:57:15 +0200
