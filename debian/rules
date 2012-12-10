@@ -37,7 +37,6 @@ override_dh_install:
 	       debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/config/module.xml
 	# clean libraries which are replaced by a dependency
 	rm -r debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/lib/php/vendor/
-	rm -r debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/lib/js/excanvas
 	rm -r debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/lib/js/jquery
 	rm -r debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/lib/js/flot
 	rm debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/lib/nodejs/jquery-*.min.js
