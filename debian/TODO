@@ -6,6 +6,8 @@ TODO list:
 * better output handling for the daemons on start (maybe patch upstream)
 * remove fd 3 close form init script (upstream patch)
 * maybe ingraph-web
+* extjs depedency
+* excanvas (IE)
 
  -- Markus Frosch <markus@lazyfrosch.de>  Wed, 15 Nov 2012 16:56:48 +0200
 
