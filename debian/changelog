@@ -1,19 +1,26 @@
 ingraph (1.0.1-1) UNRELEASED; urgency=low
 
+  [ Package changes ]
   * [520dc33] Imported Upstream version 1.0.1
-  * [b851474] updated control - URLs and format
-  * [cdf6113] removed dependency on pwgen
   * [4056cb3] updated config file inclusion for icinga-web cronk
   * [ac0c9b6] added handling for Icinga Web < 1.8 grid template
   * [5391d66] moved logs to /var/log/ingraph/
   * [59f3861] documentation and example updates
+  * [864dfe2] Split initscripts for ingraphd and ingraph-collectord
+  * [a4d1338] Fix starting order, start ingraphd after the database
+
+  [ Source changes ]
+  * [b851474] updated control - URLs and format
+  * [cdf6113] removed dependency on pwgen
   * [7ce1b33] now using FPDF via a dependency
   * [c3122c0] lintian and general cleanup
   * [f4e4328] icinga-web.xml now generated without ingraph
   * [2661e3e] JQuery and Flot now a dependency
   * [f11171e] updated copyright file to fit DEP5 requirements
+  * [e1cc1af] do not remove excanvas
+  * [5ae4d54] Linked package to libjs-excanvas
 
- -- Markus Frosch <markus@lazyfrosch.de>  Thu, 15 Nov 2012 07:26:55 +0100
+ -- Markus Frosch <markus@lazyfrosch.de>  Mon, 04 Feb 2013 15:02:14 +0100
 
 ingraph (1.0-1~netways) unstable; urgency=low
 
