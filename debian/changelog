@@ -1,4 +1,4 @@
-ingraph (1.0.1-1) UNRELEASED; urgency=low
+ingraph (1.0.1-1) unstable; urgency=low
 
   [ Package changes ]
   * [520dc33] Imported Upstream version 1.0.1
@@ -19,7 +19,7 @@ ingraph (1.0.1-1) UNRELEASED; urgency=low
   * [f11171e] updated copyright file to fit DEP5 requirements
   * [5ae4d54] Linked package to libjs-excanvas
 
- -- Markus Frosch <markus@lazyfrosch.de>  Mon, 04 Feb 2013 15:02:14 +0100
+ -- Markus Frosch <markus@lazyfrosch.de>  Mon, 04 Feb 2013 16:26:26 +0100
 
 ingraph (1.0-1~netways) unstable; urgency=low
 
