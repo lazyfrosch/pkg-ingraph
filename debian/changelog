@@ -1,4 +1,4 @@
-ingraph (1.0.1-1) unstable; urgency=low
+ingraph (1.0.1-1~debmon60+1) debmon-squeeze; urgency=low
 
   [ Package changes ]
   * [520dc33] Imported Upstream version 1.0.1
