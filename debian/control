@@ -45,6 +45,7 @@ Description: Icinga/Nagios performance data graphing solution
 Package: icinga-web-ingraph
 Architecture: all
 Depends: icinga-web (>= 1.7.0),
+         libjs-excanvas (>= 0.r3-3),
          libjs-jquery (>= 1.7.1),
          libjs-flot (>= 0.7),
          php-fpdf (>= 3:1.7),
