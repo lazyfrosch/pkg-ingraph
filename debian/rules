@@ -14,6 +14,10 @@ override_dh_clean:
 	rm -rf .pc/
 	dh_clean
 
+override_dh_installinit:
+	dh_installinit
+	dh_installinit --name=ingraph-collector
+
 override_dh_install:
 	dh_install
 	# install config as examples
