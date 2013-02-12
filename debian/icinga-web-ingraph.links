@@ -1,0 +1,4 @@
+/usr/share/javascript/jquery/jquery.min.js  /usr/share/icinga-web/app/modules/inGraph/lib/js/jquery/jquery.min.js
+/usr/share/javascript/flot/jquery.flot.js   /usr/share/icinga-web/app/modules/inGraph/lib/js/flot/jquery.flot.js
+/usr/share/javascript/excanvas/excanvas.js  /usr/share/icinga-web/app/modules/inGraph/lib/js/excanvas/excanvas.js
+
