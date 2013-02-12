@@ -24,9 +24,8 @@ Depends: ${python:Depends},
 Recommends: icinga-web-ingraph (= ${source:Version})
 Suggests: mysql-client
 Description: Icinga/Nagios performance data graphing solution
- inGraph is a flexible, open source charting tool for Icinga and Nagios,
- which collects performance data in a database and displays the results
- in a web interface.
+ inGraph is a flexible, charting tool for Icinga and Nagios, which collects
+ performance data in a database and displays the results in a web interface.
  .
  This is the core application which contains the ingraph-collector damon,
  which does collection and preprocessing, and the ingraph daemon itself,
@@ -36,9 +35,8 @@ Description: Icinga/Nagios performance data graphing solution
 #Package: ingraph-web
 #Architecture: all
 #Description: Icinga/Nagios graphing addon for performance data
-# inGraph is a flexible, open source charting tool for Icinga and Nagios,
-# which collects performance data in a database and displays the results
-# in a web interface.
+# inGraph is a flexible, charting tool for Icinga and Nagios, which collects
+# performance data in a database and displays the results in a web interface.
 # .
 # This is the webinterface for inGraph as a standalone web interface.
 
@@ -55,9 +53,8 @@ Depends: icinga-web (>= 1.7.0),
          ${misc:Depends}
 Recommends: ingraph (= ${source:Version})
 Description: Icinga Web integration for inGraph
- inGraph is a flexible, open source charting tool for Icinga and Nagios,
- which collects performance data in a database and displays the results
- in a web interface.
+ inGraph is a flexible, charting tool for Icinga and Nagios, which collects
+ performance data in a database and displays the results in a web interface.
  .
  This is the web interface for inGraph as an addin to Icinga Web.
 
