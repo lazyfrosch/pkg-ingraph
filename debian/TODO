@@ -7,6 +7,8 @@ TODO list:
 * remove fd 3 close form init script (upstream patch)
 * maybe ingraph-web
 * extjs depedency
+* postgresql testing and integration
+* move home away from /etc
 
  -- Markus Frosch <markus@lazyfrosch.de>  Wed, 15 Nov 2012 16:56:48 +0200
 

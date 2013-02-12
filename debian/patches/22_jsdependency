@@ -2,23 +2,6 @@ Description: Javascript dependencies path changes
 Last-Update: 2012-11-15
 ---
 This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
---- a/icinga-web/inGraph/config/javascript.xml
-+++ b/icinga-web/inGraph/config/javascript.xml
-@@ -10,9 +10,14 @@
-             <ae:parameter>%core.root_dir%/lib/ext3/examples/ux/RowEditor.js</ae:parameter>
-             <ae:parameter>%core.root_dir%/lib/ext3/examples/ux/Spinner.js</ae:parameter>
-             <ae:parameter>%core.root_dir%/lib/ext3/examples/ux/SpinnerField.js</ae:parameter>
-+            <!--
-             <ae:parameter>%core.module_dir%/inGraph/lib/js/jquery/</ae:parameter>
-             <ae:parameter>%core.module_dir%/inGraph/lib/js/flot/jquery.flot.js</ae:parameter>
-+            -->
-             <ae:parameter>%core.module_dir%/inGraph/lib/js/flot/</ae:parameter>
-+            <ae:parameter>/usr/share/javascript/jquery/jquery.min.js</ae:parameter>
-+            <ae:parameter>/usr/share/javascript/flot/jquery.flot.pack.js</ae:parameter>
-+            <ae:parameter>/usr/share/javascript/excanvas/excanvas.js</ae:parameter>
-             <ae:parameter>%core.module_dir%/inGraph/lib/js/ext/ux/flot/AbstractStyleForm.js</ae:parameter>
-             <ae:parameter>%core.module_dir%/inGraph/lib/js/ext/ux/flot/FormWindow.js</ae:parameter>
-             <ae:parameter>%core.module_dir%/inGraph/lib/js/ext/ux/flot</ae:parameter>
 --- a/icinga-web/inGraph/lib/nodejs/ingraph-renderer.js
 +++ b/icinga-web/inGraph/lib/nodejs/ingraph-renderer.js
 @@ -10,7 +10,7 @@
