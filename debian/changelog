@@ -1,3 +1,12 @@
+ingraph (1.0.1-2~beta+1) UNRELEASED; urgency=low
+
+  WARNING: this is a beta release - for testing purposes only
+
+  * [04ff80a] Changed JS dependency loading to symlinks
+              for Icinga Web <1.8 support
+
+ -- Markus Frosch <markus@lazyfrosch.de>  Tue, 12 Feb 2013 21:44:16 +0100
+
 ingraph (1.0.1-1) unstable; urgency=low
 
   [ Package changes ]
