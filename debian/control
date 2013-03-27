@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 8.0.0),
                po-debconf,
                python-all (>= 2.6.6-3~),
                python-setuptools
-Standards-Version: 3.9.3
+Standards-Version: 3.9.4
 Homepage: https://www.netways.org/projects/ingraph
 Vcs-Git: git://anonscm.debian.org/pkg-nagios/pkg-ingraph.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-nagios/pkg-ingraph.git;a=summary
