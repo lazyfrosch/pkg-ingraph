@@ -1,7 +1,8 @@
 Source: ingraph
 Section: net
 Priority: extra
-Maintainer: Markus Frosch <markus@lazyfrosch.de>
+Maintainer: Debian Nagios Maintainer Group <pkg-nagios-devel@lists.alioth.debian.org>
+Uploaders: Markus Frosch <markus@lazyfrosch.de>, Alexander Wirt <formorer@debian.org>, Jan Wagner <waja@cyconet.org>
 Build-Depends: debhelper (>= 8.0.0),
                po-debconf,
                python-all (>= 2.6.6-3~),
