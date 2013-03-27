@@ -46,5 +46,10 @@ override_dh_install:
 	# clean stuff we don't want in the package
 	rm -r debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/lib/nodejs/
 
+override_dh_installdocs:
+	dh_installdocs
+	# clean stuff we don't want in the package
+	rm -r debian/ingraph/usr/share/doc/ingraph/contrib/init.d/
+
 # vi: set noexpandtab ts=4 sw=4 :
 
