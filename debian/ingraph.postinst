@@ -125,7 +125,7 @@ case "$1" in
     # create the local user
     if ! getent passwd ingraph > /dev/null ; then
       echo 'Adding system-user for inGraph' 1>&2
-      adduser --system --group --home /etc/ingraph \
+      adduser --system --group --home /var/spool/ingraph \
               --disabled-login --force-badname ingraph > /dev/null
     fi
 
