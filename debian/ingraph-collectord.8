@@ -1,0 +1,92 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" (C) Copyright 2013 Markus Frosch <markus@lazyfrosch.de>,
+.\"
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH INGRAPH-COLLECTORD 8 "March 27, 2013" "Markus Frosch"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+ingraph-collectord \- inGraph perfdata collection daemon
+.SH SYNOPSIS
+.B ingraph-collectord
+.RI [options] " {start|stop|restart|status}"
+.SH DESCRIPTION
+The inGraph collector daemon reads the performance files coming from Icinga or
+Nagios and writes them into the database via the inGraph daemon (ingraphd).
+.SH DOCUMENTATION
+Documentation for the Debian package can be found in
+/usr/share/docs/ingraph/README.Debian
+.PP
+As a online reasource the inGraph wiki should help to get started:
+https://www.netways.org/projects/ingraph/wiki
+.SH OPTIONS
+.TP
+.B \-h, \-\-help
+Show summary of options.
+.TP
+.B \-\-version
+Show version of the program.
+.TP
+.B  \-f, \-\-foreground
+Run the daemon in foreground.
+.TP
+.B \-d DIR, \-\-chdir=DIR
+change to directory DIR [default: /etc/ingraph]
+.TP
+.B \-p FILE, \-\-pidfile=FILE
+pidfile FILE [default: /var/run/ingraph/ingraph-collectord.pid]
+.TP
+.B \-o FILE, \-\-logfile=FILE
+logfile FILE [default: none]
+.TP
+.B \-u USER, \-\-user=USER  
+username under which the daemon runs.
+.TP
+.B \-g GROUP, \-\-group=GROUP
+groupname under which the daemon runs.
+.TP
+.B \-L LOGLEVEL, \-\-loglevel=LOGLEVEL
+the log level, one of INFO, WARNING, ERROR, CRITICAL [default: INFO]
+.TP
+.B \-P DIR, \-\-perfdata-dir=DIR
+perfdata directory DIR [default: /usr/local/icinga/var/perfdata]
+.TP
+.B \-e PATTERN, \-\-pattern=PATTERN
+shell pattern PATTERN [default: *-perfdata.*[0-9]]
+.TP
+.B \-m MODE, \-\-mode=MODE
+perfdata files post processing, one of: BACKUP, REMOVE [default: BACKUP]
+.TP
+.B \-l LIMIT, \-\-limit=LIMIT
+limit files [default: 50]
+.TP
+.B \-s SLEEPTIME, \-\-sleeptime=SLEEPTIME
+seconds to sleep [default: 30]
+.TP
+.B \-F FORMAT, \-\-format=FORMAT
+perfdata format, one of: ingraph, pnp [default: pnp]
+.SH AUTHOR
+inGraph is developed and maintained by NETWAYS GmbH (http://www.netways.org).
+.PP
+Written by Eric Lippmann <eric.lippmann@netways.de> and Gunnar Beutner
+<gunnar.beutner@netways.de>.
+.PP
+This manual page was written by Markus Frosch <markus@lazyfrosch.de> for the
+Debian GNU/Linux operating system (but it may be freely used, modified, and
+redistributed by others).
+.SH SEE ALSO
+.BR ingraphd (8),
+.BR /usr/share/docs/ingraph/README.Debian,
+.BR /usr/share/docs/ingraph/README

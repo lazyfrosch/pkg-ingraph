@@ -1,0 +1,77 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" (C) Copyright 2013 Markus Frosch <markus@lazyfrosch.de>,
+.\"
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH INGRAPHD 8 "March 27, 2013" "Markus Frosch"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+ingraphd \- inGraph daemon
+.SH SYNOPSIS
+.B ingraphd
+.RI [options] " {start|stop|restart|status}"
+.SH DESCRIPTION
+The inGraph daemon is the backend daemon for putting in and getting out
+performance data from the database.
+.br
+Every tool that works with inGraph's data should access it via the XMLRPC
+interface of ingraphd.
+.SH DOCUMENTATION
+Documentation for the Debian package can be found in
+/usr/share/docs/ingraph/README.Debian
+.PP
+As a online reasource the inGraph wiki should help to get started:
+https://www.netways.org/projects/ingraph/wiki
+.SH OPTIONS
+.TP
+.B \-h, \-\-help
+Show summary of options.
+.TP
+.B \-\-version
+Show version of the program.
+.TP
+.B  \-f, \-\-foreground
+Run the daemon in foreground.
+.TP
+.B \-d DIR, \-\-chdir=DIR
+change to directory DIR [default: /etc/ingraph]
+.TP
+.B \-p FILE, \-\-pidfile=FILE
+pidfile FILE [default: /var/run/ingraph/ingraphd.pid]
+.TP
+.B \-o FILE, \-\-logfile=FILE
+logfile FILE [default: none]
+.TP
+.B \-u USER, \-\-user=USER  
+username under which the daemon runs.
+.TP
+.B \-g GROUP, \-\-group=GROUP
+groupname under which the daemon runs.
+.TP
+.B \-L LOGLEVEL, \-\-loglevel=LOGLEVEL
+the log level, one of INFO, WARNING, ERROR, CRITICAL [default: INFO]
+.SH AUTHOR
+inGraph is developed and maintained by NETWAYS GmbH (http://www.netways.org).
+.PP
+Written by Eric Lippmann <eric.lippmann@netways.de> and Gunnar Beutner
+<gunnar.beutner@netways.de>.
+.PP
+This manual page was written by Markus Frosch <markus@lazyfrosch.de> for the
+Debian GNU/Linux operating system (but it may be freely used, modified, and
+redistributed by others).
+.SH SEE ALSO
+.BR ingraph-collectord (8),
+.BR /usr/share/docs/ingraph/README.Debian,
+.BR /usr/share/docs/ingraph/README
