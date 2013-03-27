@@ -1,9 +1,13 @@
-ingraph (1.0.1-2~beta+1) UNRELEASED; urgency=low
+ingraph (1.0.1-2) UNRELEASED; urgency=low
 
-  WARNING: this is a beta release - for testing purposes only
+  First official Debian release (Closes: #699792)
 
   * [04ff80a] Changed JS dependency loading to symlinks
               for Icinga Web <1.8 support
+  * [f01786a] updated packages description
+  * [54de0b0] removed nodejs scripts from the package
+  * [522d9b9] included a bit more docs, examples and contrib
+  * [b1a22ac] added manpages for both daemons
 
  -- Markus Frosch <markus@lazyfrosch.de>  Tue, 12 Feb 2013 21:44:16 +0100
 
