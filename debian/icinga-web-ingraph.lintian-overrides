@@ -1,2 +1,0 @@
-# nodejs is not a dependecy, but its ok
-unusual-interpreter usr/share/icinga-web/app/modules/inGraph/lib/nodejs/ingraph-renderer.js #!/usr/bin/nodejs

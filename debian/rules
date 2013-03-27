@@ -43,7 +43,8 @@ override_dh_install:
 	rm debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/lib/js/excanvas/excanvas.js
 	rm debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/lib/js/jquery/jquery-1.7.1.min.js
 	rm debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/lib/js/flot/jquery.flot.js
-	rm debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/lib/nodejs/jquery-*.min.js
+	# clean stuff we don't want in the package
+	rm -r debian/icinga-web-ingraph/usr/share/icinga-web/app/modules/inGraph/lib/nodejs/
 
 # vi: set noexpandtab ts=4 sw=4 :
 
