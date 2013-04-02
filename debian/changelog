@@ -8,6 +8,10 @@ ingraph (1.0.1-2) UNRELEASED; urgency=low
   * [54de0b0] removed nodejs scripts from the package
   * [522d9b9] included a bit more docs, examples and contrib
   * [b1a22ac] added manpages for both daemons
+  * [36d300c] bump standards version to 3.9.4
+  * [1f0dc21] updated Maintainers for Debian
+  * [aef3728] Move system user home to /var/spool/ingraph
+  * [2b6a0f7] Make init scripts fail-safe
 
  -- Markus Frosch <markus@lazyfrosch.de>  Tue, 12 Feb 2013 21:44:16 +0100
 
