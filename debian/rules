@@ -14,8 +14,8 @@ override_dh_clean:
 	dh_clean
 
 override_dh_installinit:
-	dh_installinit
-	dh_installinit --name=ingraph-collector
+	dh_installinit --error-handler=true
+	dh_installinit --name=ingraph-collector --error-handler=true
 
 override_dh_install:
 	dh_install
